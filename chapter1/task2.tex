@@ -1,0 +1,947 @@
+\documentclass[12pt,a4paper]{article}
+
+% =========================
+% PACKAGES
+% =========================
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+\usepackage{geometry}
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{array}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+% =========================
+% DOCUMENT
+% =========================
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{GLOSSARY AND DATA DICTIONARY}}\\[0.5cm]
+    {\large \textbf{FamilyConnect System}}
+\end{center}
+
+\vspace{0.5cm}
+
+% ============================================================
+% A. NHÓM QUẢN TRỊ & KẾT NỐI
+% ============================================================
+
+\section{Nhóm Quản trị \& Kết nối}
+
+\subsection{User}
+
+\textbf{User (Thực thể mạnh):} Người dùng cuối trong hệ thống
+(Developer, Staff, Manager, Tech Lead, Admin).
+
+\subsubsection*{Thuộc tính Phức hợp (Composite Attribute)}
+
+\begin{itemize}
+    \item \textbf{FullName}: Phức hợp gồm:
+    \begin{itemize}
+        \item FirstName
+        \item LastName
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Thuộc tính Đa trị (Multi-valued Attribute)}
+
+\begin{itemize}
+    \item \textbf{NotificationPreferences}: Cài đặt thông báo.
+    Lưu nhiều giá trị cùng lúc cho một người dùng
+    (ví dụ: chọn đồng thời cả EMAIL và SYSTEM).
+\end{itemize}
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{UserID (PK)}: Định danh duy nhất cho từng người dùng.
+
+    \item \textbf{Email}: Địa chỉ email bắt buộc dùng để đăng nhập
+    và nhận thông báo hệ thống.
+
+    \item \textbf{PasswordHash}: Mật khẩu đã mã hóa.
+    Lưu giá trị khi đăng nhập bằng Email/Password và giữ
+    \texttt{NULL} khi dùng thuần GitHub OAuth.
+
+    \item \textbf{Status}: Trạng thái tài khoản
+    (ACTIVE, INACTIVE, BLOCKED).
+
+    \item \textbf{CreatedAt}: Thời điểm khởi tạo tài khoản.
+
+    \item \textbf{UpdatedAt}: Thời điểm cập nhật thông tin gần nhất.
+
+    \item \textbf{DeletedAt}: Soft delete nhằm giữ nguyên lịch sử
+    giao dịch (review, comment, approval) khi người dùng rời hệ thống.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Workspace
+% ------------------------------------------------------------
+
+\subsection{Workspace}
+
+\textbf{Workspace (Thực thể mạnh):} Không gian làm việc chứa
+repository và tài liệu của một nhóm/dự án.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{workspace\_id (PK)}: Định danh duy nhất cho từng
+    không gian làm việc.
+
+    \item \textbf{name}: Tên không gian làm việc/dự án
+    (VD: ``Payment Service Platform'').
+
+    \item \textbf{description}: Mô tả chi tiết về phạm vi và mục tiêu
+    của workspace.
+
+    \item \textbf{status}: Trạng thái hoạt động của workspace
+    (ACTIVE, ARCHIVED).
+
+    \item \textbf{created\_at}: Thời điểm khởi tạo workspace.
+
+    \item \textbf{updated\_at}: Thời điểm cập nhật thông tin
+    workspace gần nhất.
+
+    \item \textbf{deleted\_at}: Cờ xóa mềm (Soft delete) giữ nguyên
+    dữ liệu báo cáo và audit trail khi ẩn workspace.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% ROLE
+% ------------------------------------------------------------
+
+\subsection{ROLE}
+
+\textbf{ROLE (Thực thể mạnh):} Vai trò của người dùng
+(scoped theo Workspace).
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{RoleID (PK)}: Định danh duy nhất cho vai trò.
+
+    \item \textbf{RoleName}: Tên vai trò
+    (VD: Developer, Staff, Manager, Tech Lead, Admin).
+
+    \item \textbf{Description}: Mô tả tóm tắt mục đích và quyền hạn
+    chung của vai trò.
+
+    \item \textbf{CreatedAt}: Thời điểm khởi tạo vai trò trong hệ thống.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Permission
+% ------------------------------------------------------------
+
+\subsection{Permission}
+
+\textbf{Permission (Thực thể mạnh):} Quyền hạn chi tiết trên hệ thống
+(VD: DOC\_APPROVE, TEMPLATE\_EDIT).
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{PermissionID (PK)}: Định danh duy nhất cho quyền.
+
+    \item \textbf{PermissionCode}: Mã quyền thao tác hệ thống
+    (VD: DOC\_APPROVE, TEMPLATE\_EDIT).
+
+    \item \textbf{Description}: Giải thích chi tiết giới hạn của thao tác này.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% WorkspaceMember
+% ------------------------------------------------------------
+
+\subsection{WorkspaceMember}
+
+\textbf{WorkspaceMember (Thực thể mối kết hợp):} Ghi nhận sự tham gia
+của User trong Workspace và vai trò (Role) tương ứng.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{MemberID (PK)}: Định danh bản ghi tham gia không gian
+    làm việc.
+
+    \item \textbf{WorkspaceID (FK)}: Tham chiếu đến không gian làm việc.
+
+    \item \textbf{UserID (FK)}: Tham chiếu đến người dùng.
+
+    \item \textbf{RoleID (FK)}: Tham chiếu đến vai trò
+    (xác định quyền của User trong Workspace cụ thể này).
+
+    \item \textbf{JoinedAt}: Thời điểm User được thêm vào Workspace.
+
+    \item \textbf{Status}: Trạng thái thành viên trong Workspace
+    (ACTIVE, INACTIVE, REMOVED).
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% ApprovalDelegation
+% ------------------------------------------------------------
+
+\subsection{ApprovalDelegation}
+
+\textbf{ApprovalDelegation (Thực thể phụ thuộc):} Bản ghi ủy quyền
+phê duyệt giữa các Manager trong khoảng thời gian xác định.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{DelegationID (PK)}: Định danh bản ghi ủy quyền.
+
+    \item \textbf{WorkspaceID (FK)}: Phạm vi không gian làm việc
+    áp dụng ủy quyền.
+
+    \item \textbf{DelegatorUserID (FK)}: ID của Manager thực hiện
+    ủy quyền.
+
+    \item \textbf{DelegateeUserID (FK)}: ID của người được nhận
+    ủy quyền (nhận quyền duyệt bài thay).
+
+    \item \textbf{ValidFrom}: Thời điểm bắt đầu hiệu lực ủy quyền.
+
+    \item \textbf{ValidUntil}: Thời điểm kết thúc hiệu lực ủy quyền.
+
+    \item \textbf{Reason}: Lý do ủy quyền
+    (VD: Nghỉ phép, công tác).
+
+    \item \textbf{Status}: Trạng thái ủy quyền
+    (ACTIVE, EXPIRED, REVOKED).
+\end{itemize}
+
+
+% ============================================================
+% B. NHÓM MÃ NGUỒN & CẤU TRÚC CODE
+% ============================================================
+
+\section{Nhóm Mã nguồn \& Cấu trúc Code}
+
+\subsection{Repository}
+
+\textbf{Repository (Thực thể mạnh):} Kho chứa mã nguồn được
+đồng bộ vào hệ thống.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{RepositoryID (PK)}: Định danh duy nhất cho kho mã nguồn.
+
+    \item \textbf{WorkspaceID (FK)}: Thuộc không gian làm việc nào.
+
+    \item \textbf{Name}: Tên repository
+    (VD: ``payment-gateway'').
+
+    \item \textbf{URL}: Đường dẫn gốc đến kho chứa.
+
+    \item \textbf{Provider}: Nền tảng lưu trữ
+    (GITHUB, GITLAB).
+
+    \item \textbf{DefaultBranch}: Nhánh mặc định
+    (VD: main, master).
+
+    \item \textbf{SyncStatus}: Trạng thái đồng bộ
+    (SYNCING, SUCCESS, FAILED).
+
+    \item \textbf{LastSyncedAt}: Thời điểm đồng bộ thành công gần nhất.
+
+    \item \textbf{CreatedAt}: Thời điểm thêm kho vào hệ thống.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Branch
+% ------------------------------------------------------------
+
+\subsection{Branch}
+
+\textbf{Branch (Thực thể yếu - phụ thuộc Repository):}
+Nhánh phát triển trong repository.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{BranchID (PK)}: Định danh duy nhất của nhánh.
+
+    \item \textbf{RepositoryID (FK)}: Kho mã nguồn chứa nhánh này.
+
+    \item \textbf{BranchName}: Tên nhánh.
+
+    \item \textbf{LastCommitHash}: Mã băm của commit mới nhất trên nhánh này.
+
+    \item \textbf{IsDefault}: Cờ xác định đây có phải nhánh mặc định
+    không (Boolean).
+
+    \item \textbf{CreatedAt}: Thời điểm nhánh được đồng bộ.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Commit
+% ------------------------------------------------------------
+
+\subsection{Commit}
+
+\textbf{Commit (Thực thể yếu - phụ thuộc Branch/Repo):}
+Bản ghi một lần commit mã nguồn.
+
+\subsubsection*{Thuộc tính Phức hợp (Composite Attribute)}
+
+\begin{itemize}
+    \item \textbf{AuthorInfo}: Thông tin tác giả thực hiện commit,
+    gồm:
+    \begin{itemize}
+        \item AuthorName
+        \item AuthorEmail
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{CommitID (PK)}: Định danh nội bộ của bản ghi.
+
+    \item \textbf{RepositoryID (FK)}: Kho mã nguồn chứa commit.
+
+    \item \textbf{BranchID (FK)}: Nhánh chứa commit này.
+
+    \item \textbf{CommitHash}: Mã băm SHA-1 duy nhất từ Git.
+
+    \item \textbf{Message}: Nội dung mô tả (commit message).
+
+    \item \textbf{CommittedAt}: Thời điểm commit xảy ra.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% PullRequest
+% ------------------------------------------------------------
+
+\subsection{PullRequest}
+
+\textbf{PullRequest (Thực thể yếu - phụ thuộc Repository):}
+Yêu cầu hợp nhất nhánh (PR) từ GitHub.
+
+\subsubsection*{Thuộc tính Đa trị (Multi-valued Attribute)}
+
+\begin{itemize}
+    \item \textbf{Labels}: Danh sách các nhãn được gắn trên PR
+    (VD: bug, enhancement, documentation).
+\end{itemize}
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{PR\_ID (PK)}: Định danh nội bộ của PR.
+
+    \item \textbf{RepositoryID (FK)}: Kho mã nguồn chứa PR.
+
+    \item \textbf{PRNumber}: Số thứ tự PR trên nền tảng gốc
+    (VD: \#123).
+
+    \item \textbf{Title}: Tiêu đề của Pull Request.
+
+    \item \textbf{SourceBranch}: Nhánh nguồn (chứa thay đổi).
+
+    \item \textbf{TargetBranch}: Nhánh đích (cần merge vào).
+
+    \item \textbf{Status}: Trạng thái
+    (OPEN, MERGED, CLOSED).
+
+    \item \textbf{CreatedAt}: Thời điểm mở PR.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% CodeDiff
+% ------------------------------------------------------------
+
+\subsection{CodeDiff}
+
+\textbf{CodeDiff (Thực thể yếu - phụ thuộc Commit/PR):}
+Chi tiết thay đổi mã nguồn trong commit hoặc PR.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{DiffID (PK)}: Định danh bản ghi chi tiết thay đổi.
+
+    \item \textbf{CommitID (FK)}: Tham chiếu đến commit chứa thay đổi
+    (có thể NULL nếu diff gắn vào cấp độ PR).
+
+    \item \textbf{PR\_ID (FK)}: Tham chiếu đến PR chứa thay đổi.
+
+    \item \textbf{FilePath}: Đường dẫn đến file bị thay đổi.
+
+    \item \textbf{ChangeType}: Loại thay đổi
+    (ADD, MODIFY, DELETE, RENAME).
+
+    \item \textbf{Additions}: Số dòng code được thêm (Integer).
+
+    \item \textbf{Deletions}: Số dòng code bị xóa (Integer).
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% File
+% ------------------------------------------------------------
+
+\subsection{File}
+
+\textbf{File (Thực thể yếu - phụ thuộc Repository):}
+Cấu trúc tập tin mã nguồn trong kho chứa.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{FileID (PK)}: Định danh tập tin nội bộ.
+
+    \item \textbf{RepositoryID (FK)}: Kho mã nguồn chứa file.
+
+    \item \textbf{FilePath}: Đường dẫn đầy đủ của file trong repository.
+
+    \item \textbf{FileType}: Định dạng/Đuôi mở rộng
+    (.ts, .java, .py).
+
+    \item \textbf{LastCommitID (FK)}: Commit gần nhất làm thay đổi file này.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% CodeEntity
+% ------------------------------------------------------------
+
+\subsection{CodeEntity}
+
+\textbf{CodeEntity (Thực thể yếu - phụ thuộc File):}
+Đơn vị mã nguồn cụ thể thu được từ AST
+(Class, Method, Function...).
+
+\subsubsection*{Thuộc tính Phức hợp (Composite Attribute)}
+
+\begin{itemize}
+    \item \textbf{Position}: Vị trí của thực thể trong file,
+    gồm:
+    \begin{itemize}
+        \item StartLine
+        \item EndLine
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{EntityID (PK)}: Định danh thực thể code.
+
+    \item \textbf{FileID (FK)}: Tệp tin chứa code entity này.
+
+    \item \textbf{CommitID (FK)}: Phiên bản commit mà entity này được phân tích.
+
+    \item \textbf{EntityName}: Tên của class/method/function.
+
+    \item \textbf{EntityType}: Loại thực thể
+    (CLASS, METHOD, INTERFACE, ENDPOINT, PARAMETER).
+
+    \item \textbf{Signature}: Cấu trúc chữ ký
+    (VD: \texttt{public void processPayment(String id)}).
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Dependency
+% ------------------------------------------------------------
+
+\subsection{Dependency}
+
+\textbf{Dependency (Thực thể mối kết hợp):}
+Mối quan hệ phụ thuộc giữa các CodeEntity.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{DependencyID (PK)}: Định danh bản ghi phụ thuộc.
+
+    \item \textbf{SourceEntityID (FK)}: Thực thể gọi/phụ thuộc.
+
+    \item \textbf{TargetEntityID (FK)}: Thực thể bị gọi/được phụ thuộc.
+
+    \item \textbf{DependencyType}: Loại quan hệ
+    (CALLS, INHERITS, IMPLEMENTS, USES).
+\end{itemize}
+
+
+% ============================================================
+% C. TEMPLATE ENGINE DOMAIN
+% ============================================================
+
+\section{Nhóm Khuôn mẫu Tài liệu (Template Engine Domain)}
+
+\subsection{Template}
+
+\textbf{Template (Thực thể mạnh):}
+Khuôn mẫu chuẩn để AI/User sinh tài liệu.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{TemplateID (PK)}: Định danh duy nhất cho khuôn mẫu.
+
+    \item \textbf{WorkspaceID (FK)}: Tham chiếu đến workspace sở hữu mẫu này.
+
+    \item \textbf{Name}: Tên khuôn mẫu.
+
+    \item \textbf{CreatorType}: Phân loại đối tượng tạo mẫu
+    (USER hoặc AI).
+
+    \item \textbf{Status}: Trạng thái sử dụng
+    (DRAFT, ACTIVE, ARCHIVED).
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% TemplateSection
+% ------------------------------------------------------------
+
+\subsection{TemplateSection}
+
+\textbf{TemplateSection (Thực thể yếu - phụ thuộc Template):}
+Mục con/heading trong cấu trúc dàn ý của Template.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{SectionID (PK)}: Định danh duy nhất cho mục con.
+
+    \item \textbf{TemplateID (FK)}: Tham chiếu đến Template cha.
+
+    \item \textbf{HeadingTitle}: Tiêu đề của mục.
+
+    \item \textbf{OrderIndex}: Số thứ tự sắp xếp của mục con.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Placeholder
+% ------------------------------------------------------------
+
+\subsection{Placeholder}
+
+\textbf{Placeholder (Thực thể yếu - phụ thuộc TemplateSection):}
+Biến/điểm chèn trong Section, làm nhiệm vụ nhận dữ liệu từ code.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{PlaceholderID (PK)}: Định danh duy nhất cho điểm chèn.
+
+    \item \textbf{SectionID (FK)}: Nằm trong mục con nào.
+
+    \item \textbf{VariableName}: Mã nhận diện biến
+    (VD: \texttt{\{\{api\_endpoint\}\}}).
+
+    \item \textbf{ExpectedDataType}: Loại dữ liệu kỳ vọng.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% TemplateMapping
+% ------------------------------------------------------------
+
+\subsection{TemplateMapping}
+
+\textbf{TemplateMapping (Thực thể mối kết hợp):}
+Ánh xạ trực tiếp giữa Placeholder và CodeEntity để AI trích xuất thông tin.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{MappingID (PK)}: Định danh bản ghi ánh xạ.
+
+    \item \textbf{PlaceholderID (FK)}: Tham chiếu đến biến.
+
+    \item \textbf{CodeEntityID (FK)}: Tham chiếu đến code.
+
+    \item \textbf{ExtractionRule}: Quy tắc/Prompt ẩn để AI biết cách lấy dữ liệu.
+\end{itemize}
+
+
+% ============================================================
+% D. DOCUMENTATION DOMAIN
+% ============================================================
+
+\section{Nhóm Tài liệu \& Vòng đời Dữ liệu (Documentation Domain)}
+
+\subsection{Document}
+
+\textbf{Document (Thực thể mạnh):}
+Tài liệu gốc (README, API Reference, Architecture Guide, ADR...).
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{DocumentID (PK)}: Định danh duy nhất cho tài liệu.
+
+    \item \textbf{WorkspaceID (FK)}: Tham chiếu đến workspace quản lý tài liệu.
+
+    \item \textbf{Title}: Tên của tài liệu.
+
+    \item \textbf{DocumentType}: Phân loại tài liệu
+    (VD: README, API\_REFERENCE, ARCHITECTURE\_GUIDE, ADR).
+
+    \item \textbf{CreatedAt}: Thời điểm khởi tạo.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% DocumentVersion
+% ------------------------------------------------------------
+
+\subsection{DocumentVersion}
+
+\textbf{DocumentVersion (Thực thể yếu - phụ thuộc Documentation):}
+Bản ghi nội dung tài liệu theo từng mốc thời gian và trạng thái
+(Draft, In Review, Approved, Published).
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{VersionID (PK)}: Định danh phiên bản.
+
+    \item \textbf{DocumentID (FK)}: Tham chiếu đến tài liệu gốc.
+
+    \item \textbf{VersionNumber}: Số thứ tự phiên bản
+    (VD: 1.0, 1.1).
+
+    \item \textbf{Content}: Dữ liệu văn bản chi tiết.
+
+    \item \textbf{Status}: Trạng thái vòng đời
+    (DRAFT, IN\_REVIEW, APPROVED, PUBLISHED).
+
+    \item \textbf{Timestamp}: Mốc thời gian của phiên bản.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% ChangeLog
+% ------------------------------------------------------------
+
+\subsection{ChangeLog}
+
+\textbf{ChangeLog (Thực thể yếu - phụ thuộc DocumentVersion):}
+Lịch sử vết thay đổi chi tiết giữa các phiên bản tài liệu.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{LogID (PK)}: Định danh bản ghi lịch sử.
+
+    \item \textbf{VersionID (FK)}: Tham chiếu đến phiên bản phát sinh thay đổi.
+
+    \item \textbf{ChangeDescription}: Nội dung tóm tắt sự khác biệt.
+
+    \item \textbf{CreatedAt}: Thời gian ghi nhận sự thay đổi.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% DocumentAsset
+% ------------------------------------------------------------
+
+\subsection{DocumentAsset}
+
+\textbf{DocumentAsset (Thực thể yếu - phụ thuộc DocumentVersion):}
+Tài nguyên đa phương tiện (hình ảnh, sơ đồ) gắn kèm tài liệu.
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{AssetID (PK)}: Định danh tài nguyên.
+
+    \item \textbf{VersionID (FK)}: Tham chiếu đến phiên bản tài liệu
+    chứa tài nguyên.
+
+    \item \textbf{AssetURL}: Đường dẫn lưu trữ file đa phương tiện.
+
+    \item \textbf{AssetType}: Phân loại định dạng
+    (IMAGE, DIAGRAM).
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% TicketReference
+% ------------------------------------------------------------
+
+\subsection{TicketReference}
+
+\textbf{TicketReference (Thực thể phụ thuộc):}
+Mã tham chiếu liên kết đến các công cụ quản lý công việc bên ngoài
+(Jira Ticket ID, GitHub Issue).
+
+\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+
+\begin{itemize}
+    \item \textbf{ReferenceID (PK)}: Định danh liên kết.
+
+    \item \textbf{DocumentID (FK) hoặc VersionID (FK)}:
+    Tham chiếu đến tài liệu/phiên bản chứa liên kết.
+
+    \item \textbf{Platform}: Tên hệ thống bên ngoài
+    (JIRA, GITHUB).
+
+    \item \textbf{TicketCode}: Mã định danh ticket
+    (VD: PROJ-123, \#45).
+
+    \item \textbf{TicketURL}: Đường dẫn nhấp trực tiếp vào ticket
+    trên hệ thống đích.
+\end{itemize}
+
+
+% ============================================================
+% E. REVIEW & GOVERNANCE
+% ============================================================
+
+\section{Nhóm Kiểm duyệt \& Phê duyệt (Review \& Governance Domain)}
+
+\subsection{Review}
+
+\textbf{Review (Thực thể mối kết hợp/Sự kiện):}
+Tiến trình Staff thực hiện đánh giá kỹ thuật trên một DocumentVersion.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{ReviewID (PK)}: Định danh phiên đánh giá.
+
+    \item \textbf{VersionID (FK)}: Tham chiếu đến tài liệu được đánh giá.
+
+    \item \textbf{ReviewerUserID (FK)}: Tham chiếu đến người duyệt.
+
+    \item \textbf{Status}: Trạng thái của phiên đánh giá
+    (IN\_PROGRESS, COMPLETED).
+
+    \item \textbf{CreatedAt}: Thời điểm bắt đầu tiến trình.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% ReviewComment
+% ------------------------------------------------------------
+
+\subsection{ReviewComment}
+
+\textbf{ReviewComment (Thực thể yếu - phụ thuộc Review):}
+Phản hồi, góp ý chi tiết trong quá trình kiểm duyệt.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{CommentID (PK)}: Định danh bình luận.
+
+    \item \textbf{ReviewID (FK)}: Tham chiếu đến phiên đánh giá
+    chứa bình luận.
+
+    \item \textbf{Content}: Nội dung text của bình luận.
+
+    \item \textbf{CreatedAt}: Thời gian gửi góp ý.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Approval
+% ------------------------------------------------------------
+
+\subsection{Approval}
+
+\textbf{Approval (Thực thể mối kết hợp/Sự kiện):}
+Quyết định phê duyệt xuất bản/commit tài liệu chính thức từ Manager.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{ApprovalID (PK)}: Định danh bản ghi phê duyệt.
+
+    \item \textbf{VersionID (FK)}: Tham chiếu đến tài liệu được duyệt.
+
+    \item \textbf{ApproverUserID (FK)}: Tham chiếu đến người ra quyết định.
+
+    \item \textbf{Decision}: Trạng thái/Kết quả quyết định
+    (APPROVED, REJECTED).
+
+    \item \textbf{ApprovedAt}: Thời điểm thao tác phê duyệt/xuất bản thành công.
+\end{itemize}
+
+
+% ============================================================
+% F. AI EVIDENCE & OBSERVABILITY
+% ============================================================
+
+\section{Nhóm AI Evidence, Giám sát \& Kiểm toán
+(AI Evidence \& Observability Domain)}
+
+\subsection{GroundingEvidence}
+
+\textbf{GroundingEvidence (Thực thể yếu - phụ thuộc DocumentVersion):}
+Bảng minh chứng chứa liên kết nguồn gốc (File, CodeEntity, Commit)
+AI dùng để tạo nội dung, phục vụ chống hallucination.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{EvidenceID (PK)}: Định danh bản ghi minh chứng.
+
+    \item \textbf{VersionID (FK)}: Tham chiếu đến phiên bản tài liệu.
+
+    \item \textbf{FileID (FK)}: Tham chiếu đến file gốc.
+
+    \item \textbf{CodeEntityID (FK)}: Tham chiếu đến cấu trúc code.
+
+    \item \textbf{CommitID (FK)}: Tham chiếu đến mốc thay đổi.
+
+    \item \textbf{Purpose}: Phân loại mục đích lưu vết
+    (chống hallucination).
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% DriftAlert
+% ------------------------------------------------------------
+
+\subsection{DriftAlert}
+
+\textbf{DriftAlert (Thực thể sự kiện):}
+Cảnh báo phát hiện tài liệu bị lệch ngữ nghĩa/lỗi thời so với code mới.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{AlertID (PK)}: Định danh cảnh báo.
+
+    \item \textbf{DocumentID (FK)}: Tham chiếu đến tài liệu bị lỗi.
+
+    \item \textbf{NewCommitID (FK)}: Tham chiếu đến mã code mới
+    gây ra độ lệch.
+
+    \item \textbf{DriftType}: Phân loại lỗi
+    (SEMANTIC, OUTDATED).
+
+    \item \textbf{Status}: Trạng thái cảnh báo
+    (OPEN, RESOLVED).
+
+    \item \textbf{DetectedAt}: Thời điểm phát hiện.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% Report
+% ------------------------------------------------------------
+
+\subsection{Report}
+
+\textbf{Report (Thực thể nghiệp vụ):}
+Dữ liệu báo cáo tổng quan về chất lượng tài liệu,
+tình trạng drift và chỉ số hệ thống.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{ReportID (PK)}: Định danh báo cáo.
+
+    \item \textbf{WorkspaceID (FK)}: Tham chiếu đến không gian làm việc.
+
+    \item \textbf{DocQualityMetrics}: Chỉ số đánh giá tài liệu
+    (thường lưu dạng JSON hoặc điểm số).
+
+    \item \textbf{DriftMetrics}: Số liệu thống kê các cảnh báo lệch.
+
+    \item \textbf{SystemMetrics}: Dữ liệu về API, tài nguyên hệ thống
+    (CPU, Memory...).
+
+    \item \textbf{GeneratedAt}: Thời điểm chốt số liệu báo cáo.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% AuditLog
+% ------------------------------------------------------------
+
+\subsection{AuditLog}
+
+\textbf{AuditLog (Thực thể nhật ký):}
+Lưu vết kiểm toán toàn bộ hành vi quản trị và thay đổi quan trọng
+trong hệ thống.
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{LogID (PK)}: Định danh log.
+
+    \item \textbf{ActorUserID (FK)}: Người thực hiện thao tác.
+
+    \item \textbf{Action}: Tên thao tác
+    (VD: UPDATE\_POLICY, DELETE\_DOC).
+
+    \item \textbf{TargetEntity}: Tên bảng/đối tượng bị tác động
+    (VD: ``Role'', ``Workspace'').
+
+    \item \textbf{TargetEntityID}: ID của đối tượng bị tác động.
+
+    \item \textbf{Timestamp}: Thời điểm xảy ra sự kiện.
+\end{itemize}
+
+
+% ------------------------------------------------------------
+% AIJob
+% ------------------------------------------------------------
+
+\subsection{AIJob}
+
+\textbf{AIJob (Thực thể tác vụ/tiến trình):}
+Tiến trình xử lý ngầm của AI
+(generate, update, detect drift, indexing, RAG).
+
+\subsubsection*{Thuộc tính Đơn}
+
+\begin{itemize}
+    \item \textbf{JobID (PK)}: Định danh tiến trình ngầm.
+
+    \item \textbf{JobType}: Phân loại tác vụ
+    (GENERATE, UPDATE, DETECT\_DRIFT, INDEXING, RAG).
+
+    \item \textbf{Status}: Trạng thái của job
+    (PENDING, PROCESSING, COMPLETED, FAILED).
+
+    \item \textbf{TargetEntityID}: ID của PR, Document hoặc Repo
+    mà Job này đang xử lý.
+
+    \item \textbf{StartedAt}: Thời điểm bắt đầu chạy.
+
+    \item \textbf{FinishedAt}: Thời điểm hoàn thành hoặc thất bại.
+\end{itemize}
+
+
+\end{document}
