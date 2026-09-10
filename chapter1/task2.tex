@@ -95,6 +95,21 @@
 \end{itemize}
 
 
+\textbf{RolePermission (Thực thể liên kết):} Bản ghi phân quyền chi tiết cho từng vai trò trong hệ thống.
+
+\textbf{-- Thuộc tính Đơn (Atomic Attribute):}
+
+\begin{itemize}
+    \item \textbf{role\_permission\_id (PK):} Định danh duy nhất cho bản ghi phân quyền (UUID).
+    
+    \item \textbf{role\_id (FK):} Khóa ngoại trỏ đến vai trò được gán quyền (\texttt{roles}).
+    
+    \item \textbf{permission\_id (FK):} Khóa ngoại trỏ đến quyền hạn cụ thể (\texttt{permissions}).
+    
+    \item \textbf{created\_at:} Mốc thời gian quyền này được gán cho vai trò.
+\end{itemize}
+
+
 % =========================================================
 % WORKSPACE MEMBER
 % =========================================================
