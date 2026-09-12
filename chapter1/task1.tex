@@ -272,14 +272,6 @@ Bản ghi nội dung tài liệu theo thời gian, quản lý vòng đời (Draf
 \\
 \hline
 
-DocumentAsset
-&
-File đa phương tiện
-&
-Hình ảnh, sơ đồ kiến trúc đính kèm trong tài liệu.
-\\
-\hline
-
 Template
 &
 Mẫu tài liệu
@@ -352,13 +344,7 @@ Góp ý, phản hồi chi tiết của Staff trong quá trình kiểm duyệt.
 \\
 \hline
 
-TicketReference
-&
-Liên kết Ticket
-&
-Mã tham chiếu đến các công cụ quản lý công việc bên ngoài (Jira ticket ID).
-\\
-\hline
+
 
 Notification
 &
@@ -368,13 +354,7 @@ Cảnh báo/tin nhắn gửi tới User (khi có PR chờ duyệt, kết nối T
 \\
 \hline
 
-AuditLog
-&
-Nhật ký kiểm toán
-&
-Vết ghi lại toàn bộ các thao tác quản trị hạ tầng của Administrator và các hành vi nhạy cảm.
-\\
-\hline
+
 
 ApprovalDelegation
 &
@@ -392,13 +372,7 @@ Lịch sử vết thay đổi tài liệu chi tiết giữa các phiên bản, g
 \\
 \hline
 
-Report
-&
-Báo cáo sức khỏe
-&
-Dữ liệu tổng hợp chỉ số chất lượng tài liệu, độ phủ coverage và tình trạng drift do Tech Lead quản lý.
-\\
-\hline
+
 
 \caption{Từ điển nghiệp vụ của hệ thống}
 \label{tab:business-entities}
@@ -595,9 +569,7 @@ Ma trận phân quyền chi tiết thiết lập các quyền hạn cụ thể m
     \item \textbf{GitHubConnection (Thực thể phụ thuộc):}
     Lưu thông tin xác thực OAuth của User với GitHub.
 
-    \item \textbf{ApprovalDelegation (Thực thể phụ thuộc):}
-    Bản ghi ủy quyền phê duyệt giữa các Manager trong khoảng thời gian
-    xác định.
+    
 
 \end{itemize}
 
@@ -667,12 +639,7 @@ Ma trận phân quyền chi tiết thiết lập các quyền hạn cụ thể m
     \item \textbf{ChangeLog (Thực thể yếu -- phụ thuộc DocumentVersion):}
     Lịch sử vết thay đổi chi tiết giữa các phiên bản tài liệu.
 
-    \item \textbf{DocumentAsset (Thực thể yếu -- phụ thuộc DocumentVersion):}
-    Tài nguyên đa phương tiện (hình ảnh, sơ đồ) gắn kèm tài liệu.
-
-    \item \textbf{TicketReference (Thực thể phụ thuộc):}
-    Mã tham chiếu liên kết đến các công cụ quản lý công việc bên ngoài
-    (Jira Ticket ID, GitHub Issue).
+    
 
 \end{itemize}
 
@@ -706,17 +673,6 @@ Ma trận phân quyền chi tiết thiết lập các quyền hạn cụ thể m
     \item \textbf{DriftAlert (Thực thể sự kiện):}
     Cảnh báo phát hiện tài liệu bị lệch ngữ nghĩa/lỗi thời so với code mới.
 
-    \item \textbf{Report (Thực thể nghiệp vụ):}
-    Dữ liệu báo cáo tổng quan về chất lượng tài liệu,
-    tình trạng drift và chỉ số hệ thống.
-
-    \item \textbf{AuditLog (Thực thể nhật ký):}
-    Lưu vết kiểm toán toàn bộ hành vi quản trị và thay đổi quan trọng
-    trong hệ thống.
-
-    \item \textbf{AIJob (Thực thể tác vụ/tiến trình):}
-    Tiến trình xử lý ngầm của AI (generate, update, detect drift,
-    indexing, RAG).
 
 \end{itemize}
 ```
