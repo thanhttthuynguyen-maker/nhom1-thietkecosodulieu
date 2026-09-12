@@ -1,739 +1,396 @@
-\section*{Chi tiết các Thực thể Dữ liệu}
+\chapter*{Chi tiết các Thực thể Dữ liệu}
 
-% =========================================================
-% A. NHÓM QUẢN TRỊ & KẾT NỐI
-% =========================================================
+\section*{A. Nhóm Quản trị \& Kết nối}
 
-\section{Nhóm Quản trị \& Kết nối}
+\textbf{User (Thực thể mạnh):} Người dùng cuối trong hệ thống (Developer, Staff, Manager, Tech Lead, Admin).
 
-\subsection{User}
-
-\textbf{User (Thực thể mạnh):} Người dùng cuối trong hệ thống
-(Developer, Staff, Manager, Tech Lead, Admin).
-
-\subsubsection*{Thuộc tính Phức hợp (Composite Attribute)}
+\textbf{Thuộc tính Phức hợp (Composite Attribute):}
 
 \begin{itemize}
-    \item \textbf{FullName}: Phức hợp, gồm \textbf{FirstName} và \textbf{LastName}.
+    \item \textbf{FullName} (Phức hợp: FirstName, LastName)
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đa trị (Multi-valued Attribute)}
+\textbf{Thuộc tính Đa trị (Multi-valued Attribute)}
 
 \begin{itemize}
-    \item \textbf{NotificationPreferences}: Cài đặt thông báo, lưu nhiều giá trị cùng lúc cho một người dùng (ví dụ: chọn đồng thời cả EMAIL và SYSTEM).
+    \item \textbf{NotificationPreferences (Cài đặt thông báo):} Lưu nhiều giá trị cùng lúc cho một người dùng (ví dụ: chọn đồng thời cả EMAIL và SYSTEM).
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute)}
 
 \begin{itemize}
-    \item \textbf{UserID (PK)}: Định danh duy nhất cho từng người dùng.
-    \item \textbf{Email}: Địa chỉ email bắt buộc dùng để đăng nhập và nhận thông báo hệ thống.
-    \item \textbf{PasswordHash}: Mật khẩu đã mã hóa. Lưu giá trị khi đăng nhập bằng Email/Password và giữ \textbf{NULL} khi dùng thuần GitHub OAuth.
-    \item \textbf{Status}: Trạng thái tài khoản (ACTIVE, INACTIVE, BLOCKED).
-    \item \textbf{CreatedAt}: Thời điểm khởi tạo tài khoản.
-    \item \textbf{UpdatedAt}: Thời điểm cập nhật thông tin gần nhất.
-    \item \textbf{DeletedAt}: Soft delete nhằm giữ nguyên lịch sử giao dịch (review, comment, approval) khi người dùng rời hệ thống.
+    \item \textbf{user\_id (PK):} Định danh duy nhất cho từng người dùng.
+    \item \textbf{email:} Địa chỉ email bắt buộc dùng để đăng nhập và nhận thông báo hệ thống.
+    \item \textbf{password\_hash:} Mật khẩu đã mã hóa. Lưu giá trị khi đăng nhập bằng Email/Password và giữ \textbf{NULL} khi dùng thuần GitHub OAuth.
+    \item \textbf{status:} Trạng thái tài khoản (ACTIVE, INACTIVE, BLOCKED).
+    \item \textbf{created\_at:} Thời điểm khởi tạo tài khoản.
+    \item \textbf{updated\_at:} Thời điểm cập nhật thông tin gần nhất.
+    \item \textbf{deleted\_at:} (Soft delete) nhằm giữ nguyên lịch sử giao dịch (review, comment, approval) khi người dùng rời hệ thống.
 \end{itemize}
-
-
-% =========================================================
-% WORKSPACE
-% =========================================================
-
-\subsection{Workspace}
 
 \textbf{Workspace (Thực thể mạnh):} Không gian làm việc chứa repository và tài liệu của một nhóm/dự án.
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute)}
 
 \begin{itemize}
-    \item \textbf{workspace\_id (PK)}: Định danh duy nhất cho từng không gian làm việc.
-    \item \textbf{name}: Tên không gian làm việc/dự án (VD: ``Payment Service Platform'').
-    \item \textbf{description}: Mô tả chi tiết về phạm vi và mục tiêu của workspace.
-    \item \textbf{status}: Trạng thái hoạt động của workspace (ACTIVE, ARCHIVED).
-    \item \textbf{created\_at}: Thời điểm khởi tạo workspace.
-    \item \textbf{updated\_at}: Thời điểm cập nhật thông tin workspace gần nhất.
-    \item \textbf{deleted\_at}: Cờ xóa mềm (Soft delete) giữ nguyên dữ liệu báo cáo và audit trail khi ẩn workspace.
+    \item \textbf{workspace\_id (PK):} Định danh duy nhất cho từng không gian làm việc.
+    \item \textbf{name:} Tên không gian làm việc/dự án (VD: ``Payment Service Platform'').
+    \item \textbf{description:} Mô tả chi tiết về phạm vi và mục tiêu của workspace.
+    \item \textbf{status:} Trạng thái hoạt động của workspace (ACTIVE, ARCHIVED).
+    \item \textbf{created\_at:} Thời điểm khởi tạo workspace.
+    \item \textbf{updated\_at:} Thời điểm cập nhật thông tin workspace gần nhất.
+    \item \textbf{deleted\_at:} Cờ xóa mềm (Soft delete) giữ nguyên dữ liệu báo cáo và audit trail khi ẩn workspace.
 \end{itemize}
-
-
-% =========================================================
-% ROLE
-% =========================================================
-
-\subsection{Role}
 
 \textbf{Role (Thực thể mạnh):} Vai trò của người dùng (scoped theo Workspace).
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute)}
 
 \begin{itemize}
-    \item \textbf{role\_id (PK)}: Định danh duy nhất cho vai trò.
-    \item \textbf{role\_name}: Tên vai trò (VD: Developer, Staff, Manager, Tech Lead, Admin).
-    \item \textbf{description}: Mô tả tóm tắt mục đích và quyền hạn chung của vai trò.
-    \item \textbf{created\_at}: Thời điểm khởi tạo vai trò trong hệ thống.
-    \item \textbf{updated\_at}: Thời điểm cập nhật vai trò gần nhất.
+    \item \textbf{role\_id (PK):} Định danh duy nhất cho vai trò.
+    \item \textbf{role\_name:} Tên vai trò (VD: Developer, Staff, Manager, Tech Lead, Admin).
+    \item \textbf{description:} Mô tả tóm tắt mục đích và quyền hạn chung của vai trò.
+    \item \textbf{created\_at:} Thời điểm khởi tạo vai trò trong hệ thống.
+    \item \textbf{updated\_at:} Thời điểm cập nhật vai trò gần nhất.
 \end{itemize}
 
+\textbf{Permission (Thực thể mạnh):} Quyền hạn chi tiết trên hệ thống (VD: DOC\_APPROVE, TEMPLATE\_EDIT).
 
-% =========================================================
-% PERMISSION
-% =========================================================
-
-\subsection{Permission}
-
-\textbf{Permission (Thực thể mạnh):} Quyền hạn chi tiết trên hệ thống
-(VD: DOC\_APPROVE, TEMPLATE\_EDIT).
-
-\subsubsection*{Thuộc tính Đơn (Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Atomic Attribute)}
 
 \begin{itemize}
-    \item \textbf{permission\_id (PK)}: Định danh duy nhất cho quyền.
-    \item \textbf{permission\_code}: Mã quyền thao tác hệ thống (VD: DOC\_APPROVE, TEMPLATE\_EDIT).
-    \item \textbf{description}: Giải thích chi tiết giới hạn của thao tác này.
-    \item \textbf{created\_at}: Mốc thời gian quyền được khởi tạo vào danh mục hệ thống.
+    \item \textbf{permission\_id (PK):} Định danh duy nhất cho quyền.
+    \item \textbf{permission\_code:} Mã quyền thao tác hệ thống (VD: DOC\_APPROVE, TEMPLATE\_EDIT).
+    \item \textbf{description:} Giải thích chi tiết giới hạn của thao tác này.
+    \item \textbf{created\_at:} Mốc thời gian quyền được khởi tạo vào danh mục hệ thống.
 \end{itemize}
-
 
 \textbf{RolePermission (Thực thể liên kết):} Bản ghi phân quyền chi tiết cho từng vai trò trong hệ thống.
 
-\textbf{-- Thuộc tính Đơn (Atomic Attribute):}
+\textbf{Thuộc tính Đơn (Atomic Attribute):}
 
 \begin{itemize}
     \item \textbf{role\_permission\_id (PK):} Định danh duy nhất cho bản ghi phân quyền (UUID).
-    
-    \item \textbf{role\_id (FK):} Khóa ngoại trỏ đến vai trò được gán quyền (\texttt{roles}).
-    
-    \item \textbf{permission\_id (FK):} Khóa ngoại trỏ đến quyền hạn cụ thể (\texttt{permissions}).
-    
+    \item \textbf{role\_id (FK):} Khóa ngoại trỏ đến vai trò được gán quyền (roles).
+    \item \textbf{permission\_id (FK):} Khóa ngoại trỏ đến quyền hạn cụ thể (permissions).
     \item \textbf{created\_at:} Mốc thời gian quyền này được gán cho vai trò.
 \end{itemize}
 
-
-% =========================================================
-% WORKSPACE MEMBER
-% =========================================================
-
-\subsection{WorkspaceMember}
-
 \textbf{WorkspaceMember (Thực thể mối kết hợp):} Ghi nhận sự tham gia của User trong Workspace và vai trò (Role) tương ứng.
 
-\subsubsection*{Thuộc tính Đơn (Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Atomic Attribute)}
 
 \begin{itemize}
-    \item \textbf{member\_id (PK)}: Định danh duy nhất cho bản ghi tham gia.
-    \item \textbf{status}: Trạng thái thành viên (ACTIVE, INACTIVE, REMOVED).
-    \item \textbf{joined\_at}: Thời điểm người dùng chính thức tham gia.
-    \item \textbf{created\_at}: Thời điểm gửi lời mời / tạo bản ghi.
-    \item \textbf{updated\_at}: Thời điểm cập nhật vai trò hoặc trạng thái gần nhất.
+    \item \textbf{member\_id (PK):} Định danh duy nhất cho bản ghi tham gia.
+    \item \textbf{status:} Trạng thái thành viên (ACTIVE, INACTIVE, REMOVED).
+    \item \textbf{joined\_at:} Thời điểm người dùng chính thức tham gia.
+    \item \textbf{created\_at:} Thời điểm gửi lời mời / tạo bản ghi.
+    \item \textbf{updated\_at:} Thời điểm cập nhật vai trò hoặc trạng thái gần nhất.
 \end{itemize}
-
-
-% =========================================================
-% APPROVAL DELEGATION
-% =========================================================
-
-\subsection{ApprovalDelegation}
-
-\textbf{ApprovalDelegation (Thực thể phụ thuộc):} Bản ghi ủy quyền phê duyệt giữa các Manager trong khoảng thời gian xác định.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
-
-\begin{itemize}
-    \item \textbf{delegation\_id (PK)}: Định danh duy nhất cho bản ghi ủy quyền.
-    \item \textbf{valid\_from}: Thời điểm bắt đầu có hiệu lực ủy quyền.
-    \item \textbf{valid\_until}: Thời điểm kết thúc hiệu lực ủy quyền.
-    \item \textbf{reason}: Lý do ủy quyền (VD: Nghỉ phép, công tác).
-    \item \textbf{status}: Trạng thái ủy quyền (ACTIVE, EXPIRED, REVOKED).
-    \item \textbf{created\_at}: Thời điểm tạo bản ghi ủy quyền.
-    \item \textbf{updated\_at}: Thời điểm cập nhật trạng thái ủy quyền gần nhất.
-\end{itemize}
-
-
-% =========================================================
-% GITHUB CONNECTION
-% =========================================================
-
-\subsection{GitHubConnection}
 
 \textbf{GitHubConnection (Thực thể phụ thuộc):} Lưu thông tin xác thực OAuth của User với GitHub.
 
-\subsubsection*{Thuộc tính Khóa (Key Attribute)}
+\textbf{Thuộc tính Khóa (Key Attribute):}
 
 \begin{itemize}
-    \item \textbf{connection\_id}: Định danh duy nhất cho bản ghi kết nối OAuth.
+    \item \textbf{connection\_id:} Định danh duy nhất cho bản ghi kết nối OAuth.
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đơn / Nguyên tố (Simple / Atomic Attributes)}
+\textbf{Thuộc tính Đơn / Nguyên tố (Simple / Atomic Attributes):}
 
 \begin{itemize}
-    \item \textbf{github\_user\_id}: ID tài khoản người dùng trên hệ thống GitHub (để đối soát định danh).
-    \item \textbf{github\_username}: Tên tài khoản GitHub (VD: octocat).
-    \item \textbf{access\_token}: Chuỗi token ủy quyền dùng để gọi GitHub API.
-    \item \textbf{created\_at}: Thời điểm người dùng thực hiện liên kết tài khoản.
-    \item \textbf{updated\_at}: Thời điểm làm mới token hoặc cập nhật quyền hạn gần nhất.
+    \item \textbf{github\_user\_id:} ID tài khoản người dùng trên hệ thống GitHub (để đối soát định danh).
+    \item \textbf{github\_username:} Tên tài khoản GitHub (VD: octocat).
+    \item \textbf{access\_token:} Chuỗi token ủy quyền dùng để gọi GitHub API.
+    \item \textbf{created\_at:} Thời điểm người dùng thực hiện liên kết tài khoản.
+    \item \textbf{updated\_at:} Thời điểm làm mới token hoặc cập nhật quyền hạn gần nhất.
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đa trị (Multi-valued Attribute)}
+\textbf{Thuộc tính Đa trị (Multi-valued Attribute):}
 
 \begin{itemize}
-    \item \textbf{scopes}: Lưu danh sách các phạm vi quyền OAuth được cấp phép cùng lúc (VD: repo, read:user, workflow).
+    \item \textbf{scopes:} Lưu danh sách các phạm vi quyền OAuth được cấp phép cùng lúc (VD: repo, read:user, workflow).
 \end{itemize}
 
 
-% =========================================================
-% B. NHÓM MÃ NGUỒN & CẤU TRÚC CODE
-% =========================================================
-
-\section{Nhóm Mã nguồn \& Cấu trúc Code}
-
-\subsection{Repository}
+\section*{B. Nhóm Mã nguồn \& Cấu trúc Code}
 
 \textbf{Repository (Thực thể mạnh):} Kho chứa mã nguồn được đồng bộ vào hệ thống.
 
-\subsubsection*{Thuộc tính Đơn (Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{repository\_id (PK)}: Định danh duy nhất cho kho mã nguồn.
-    \item \textbf{name}: Tên kho mã nguồn (VD: payment-gateway).
-    \item \textbf{url}: Đường dẫn gốc đến kho chứa trên VCS.
-    \item \textbf{default\_branch}: Nhánh mặc định dùng để phân tích code (VD: main, master).
-    \item \textbf{sync\_status}: Trạng thái đồng bộ dữ liệu (SYNCING, SUCCESS, FAILED).
-    \item \textbf{last\_synced\_at}: Thời điểm đồng bộ mã nguồn thành công gần nhất.
-    \item \textbf{created\_at}: Thời điểm tích hợp kho mã nguồn vào hệ thống.
-    \item \textbf{updated\_at}: Thời điểm cập nhật trạng thái hoặc cấu hình kho gần nhất.
+    \item \textbf{repository\_id (PK):} Định danh duy nhất cho kho mã nguồn.
+    \item \textbf{name:} Tên kho mã nguồn (VD: payment-gateway).
+    \item \textbf{url:} Đường dẫn gốc đến kho chứa trên VCS.
+    \item \textbf{default\_branch:} Nhánh mặc định dùng để phân tích code (VD: main, master).
+    \item \textbf{sync\_status:} Trạng thái đồng bộ dữ liệu (SYNCING, SUCCESS, FAILED).
+    \item \textbf{last\_synced\_at:} Thời điểm đồng bộ mã nguồn thành công gần nhất.
+    \item \textbf{created\_at:} Thời điểm tích hợp kho mã nguồn vào hệ thống.
+    \item \textbf{updated\_at:} Thời điểm cập nhật trạng thái hoặc cấu hình kho gần nhất.
 \end{itemize}
 
+\textbf{Branch (Thực thể yếu - phụ thuộc Repository):} Nhánh phát triển trong repository.
 
-% =========================================================
-% BRANCH
-% =========================================================
-
-\subsection{Branch}
-
-\textbf{Branch (Thực thể yếu -- phụ thuộc Repository):} Nhánh phát triển trong repository.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{branch\_id (PK)}: Định danh duy nhất cho nhánh.
-    \item \textbf{branch\_name}: Tên nhánh (VD: main, staging, feature/auth).
-    \item \textbf{is\_default}: Cờ xác định nhánh mặc định của repo (true/false).
-    \item \textbf{created\_at}: Thời điểm nhánh được nhận diện và lưu vào hệ thống.
-    \item \textbf{updated\_at}: Thời điểm cập nhật commit hash hoặc trạng thái nhánh gần nhất.
+    \item \textbf{branch\_id (PK):} Định danh duy nhất cho nhánh.
+    \item \textbf{branch\_name:} Tên nhánh (VD: main, staging, feature/auth).
+    \item \textbf{is\_default:} Cờ xác định nhánh mặc định của repo (true/false).
+    \item \textbf{created\_at:} Thời điểm nhánh được nhận diện và lưu vào hệ thống.
+    \item \textbf{updated\_at:} Thời điểm cập nhật commit hash hoặc trạng thái nhánh gần nhất.
 \end{itemize}
 
+\textbf{Commit (Thực thể yếu - phụ thuộc Branch/Repo):} Bản ghi một lần commit mã nguồn.
 
-% =========================================================
-% COMMIT
-% =========================================================
-
-\subsection{Commit}
-
-\textbf{Commit (Thực thể yếu -- phụ thuộc Branch/Repo):} Bản ghi một lần commit mã nguồn.
-
-\subsubsection*{Thuộc tính Phức hợp (Composite Attribute)}
+\textbf{Thuộc tính Phức hợp (Composite Attribute):}
 
 \begin{itemize}
-    \item \textbf{AuthorInfo}: Thông tin tác giả thực hiện commit, gồm \textbf{AuthorName} và \textbf{AuthorEmail}.
+    \item \textbf{AuthorInfo:} Thông tin tác giả thực hiện commit (gồm AuthorName, AuthorEmail).
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic):}
 
 \begin{itemize}
-    \item \textbf{commit\_id (PK)}: Định danh nội bộ cho bản ghi commit.
-    \item \textbf{commit\_hash}: Mã băm SHA-1/SHA-256 duy nhất từ Git (VD: 7a8f9b2...).
-    \item \textbf{message}: Nội dung mô tả của commit.
-    \item \textbf{committed\_at}: Thời điểm commit được thực hiện trên VCS (thời gian nghiệp vụ).
-    \item \textbf{created\_at}: Thời điểm bản ghi commit được đồng bộ vào LivingDocs (thời gian hệ thống).
+    \item \textbf{commit\_id (PK):} Định danh nội bộ cho bản ghi commit.
+    \item \textbf{commit\_hash:} Mã băm SHA-1/SHA-256 duy nhất từ Git (VD: 7a8f9b2...).
+    \item \textbf{message:} Nội dung mô tả của commit.
+    \item \textbf{committed\_at:} Thời điểm commit được thực hiện trên VCS (thời gian nghiệp vụ).
+    \item \textbf{created\_at:} Thời điểm bản ghi commit được đồng bộ vào LivingDocs (thời gian hệ thống).
 \end{itemize}
 
+\textbf{PullRequest (Thực thể yếu - phụ thuộc Repository):} Yêu cầu hợp nhất nhánh (PR) từ GitHub.
 
-% =========================================================
-% PULL REQUEST
-% =========================================================
-
-\subsection{PullRequest}
-
-\textbf{PullRequest (Thực thể yếu -- phụ thuộc Repository):} Yêu cầu hợp nhất nhánh (PR) từ GitHub.
-
-\subsubsection*{Thuộc tính Đa trị (Multi-valued Attribute)}
+\textbf{Thuộc tính Đa trị (Multi-valued Attribute):}
 
 \begin{itemize}
-    \item \textbf{labels}: Danh sách nhãn phân loại được gắn trên PR (VD: bug, enhancement, documentation, api-change).
+    \item \textbf{labels:} Danh sách nhãn phân loại được gắn trên PR (VD: bug, enhancement, documentation, api-change).
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{pr\_id (PK)}: Định danh nội bộ của bản ghi PR.
-    \item \textbf{pr\_number}: Số thứ tự PR trên nền tảng gốc (VD: \#102, \#123).
-    \item \textbf{title}: Tiêu đề của Pull Request.
-    \item \textbf{description}: Nội dung văn bản mô tả chi tiết PR (Dữ liệu đầu vào cho AI).
-    \item \textbf{source\_branch}: Nhánh nguồn chứa mã nguồn thay đổi.
-    \item \textbf{target\_branch}: Nhánh đích dự định hợp nhất vào (VD: main, develop).
-    \item \textbf{status}: Trạng thái vòng đời của PR (OPEN, MERGED, CLOSED).
-    \item \textbf{created\_at}: Thời điểm mở PR trên VCS.
-    \item \textbf{updated\_at}: Thời điểm PR cập nhật thông tin/trạng thái gần nhất.
-    \item \textbf{merged\_at}: Thời điểm PR chính thức được chấp nhận hợp nhất (Nullable).
+    \item \textbf{pr\_id (PK):} Định danh nội bộ của bản ghi PR.
+    \item \textbf{pr\_number:} Số thứ tự PR trên nền tảng gốc (VD: \#102, \#123).
+    \item \textbf{title:} Tiêu đề của Pull Request.
+    \item \textbf{description:} Nội dung văn bản mô tả chi tiết PR (Dữ liệu đầu vào cho AI).
+    \item \textbf{source\_branch:} Nhánh nguồn chứa mã nguồn thay đổi.
+    \item \textbf{target\_branch:} Nhánh đích dự định hợp nhất vào (VD: main, develop).
+    \item \textbf{status:} Trạng thái vòng đời của PR (OPEN, MERGED, CLOSED).
+    \item \textbf{created\_at:} Thời điểm mở PR trên VCS.
+    \item \textbf{updated\_at:} Thời điểm PR cập nhật thông tin/trạng thái gần nhất.
+    \item \textbf{merged\_at:} Thời điểm PR chính thức được chấp nhận hợp nhất (Nullable).
 \end{itemize}
 
+\textbf{CodeDiff (Thực thể yếu - phụ thuộc Commit/PR):} Chi tiết thay đổi mã nguồn trong commit hoặc PR.
 
-% =========================================================
-% CODE DIFF
-% =========================================================
-
-\subsection{CodeDiff}
-
-\textbf{CodeDiff (Thực thể yếu -- phụ thuộc Commit/PR):} Chi tiết thay đổi mã nguồn trong commit hoặc PR.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{diff\_id (PK)}: Định danh nội bộ bản ghi chi tiết thay đổi.
-    \item \textbf{file\_path}: Đường dẫn tương đối đến tệp bị thay đổi (VD: src/controllers/payment.js).
-    \item \textbf{change\_type}: Loại thao tác trên file (ADD, MODIFY, DELETE, RENAME).
-    \item \textbf{additions}: Số dòng code được thêm mới.
-    \item \textbf{deletions}: Số dòng code bị xóa đi.
-    \item \textbf{diff\_content}: Nội dung chi tiết các đoạn code thay đổi (patch/hunk text) dùng làm input cho AI.
-    \item \textbf{created\_at}: Thời điểm lưu bản ghi diff vào hệ thống.
+    \item \textbf{diff\_id (PK):} Định danh nội bộ bản ghi chi tiết thay đổi.
+    \item \textbf{file\_path:} Đường dẫn tương đối đến tệp bị thay đổi (VD: src/controllers/payment.js).
+    \item \textbf{change\_type:} Loại thao tác trên file (ADD, MODIFY, DELETE, RENAME).
+    \item \textbf{additions:} Số dòng code được thêm mới.
+    \item \textbf{deletions:} Số dòng code bị xóa đi.
+    \item \textbf{diff\_content:} Nội dung chi tiết các đoạn code thay đổi (patch/hunk text) dùng làm input cho AI.
+    \item \textbf{created\_at:} Thời điểm lưu bản ghi diff vào hệ thống.
 \end{itemize}
 
+\textbf{File (Thực thể yếu - phụ thuộc Repository):} Cấu trúc tập tin mã nguồn trong kho chứa.
 
-% =========================================================
-% FILE
-% =========================================================
-
-\subsection{File}
-
-\textbf{File (Thực thể yếu -- phụ thuộc Repository):} Cấu trúc tập tin mã nguồn trong kho chứa.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{file\_id (PK)}: Định danh nội bộ của tập tin trong hệ thống.
-    \item \textbf{file\_path}: Đường dẫn đầy đủ của file tính từ gốc repository (VD: src/controllers/user\_controller.ts).
-    \item \textbf{file\_type}: Loại hoặc đuôi mở rộng của tệp (VD: ts, java, py, md).
-    \item \textbf{status}: Trạng thái của file trong cây thư mục (ACTIVE, DELETED, RENAMED).
-    \item \textbf{created\_at}: Thời điểm file lần đầu được ghi nhận vào hệ thống.
-    \item \textbf{updated\_at}: Thời điểm thông tin file hoặc nội dung file thay đổi gần nhất.
+    \item \textbf{file\_id (PK):} Định danh nội bộ của tập tin trong hệ thống.
+    \item \textbf{file\_path:} Đường dẫn đầy đủ của file tính từ gốc repository (VD: src/controllers/user\_controller.ts).
+    \item \textbf{file\_type:} Loại hoặc đuôi mở rộng của tệp (VD: ts, java, py, md).
+    \item \textbf{status:} Trạng thái của file trong cây thư mục (ACTIVE, DELETED, RENAMED).
+    \item \textbf{created\_at:} Thời điểm file lần đầu được ghi nhận vào hệ thống.
+    \item \textbf{updated\_at:} Thời điểm thông tin file hoặc nội dung file thay đổi gần nhất.
 \end{itemize}
 
+\textbf{CodeEntity (Thực thể yếu - phụ thuộc File):} Đơn vị mã nguồn cụ thể thu được từ AST (Class, Method, Function...).
 
-% =========================================================
-% CODE ENTITY
-% =========================================================
-
-\subsection{CodeEntity}
-
-\textbf{CodeEntity (Thực thể yếu -- phụ thuộc File):} Đơn vị mã nguồn cụ thể thu được từ AST (Class, Method, Function,...).
-
-\subsubsection*{Thuộc tính Phức hợp (Composite Attribute)}
+\textbf{Thuộc tính Phức hợp (Composite Attribute):}
 
 \begin{itemize}
-    \item \textbf{position}: Vị trí của thực thể trong tập tin, gồm:
+    \item \textbf{position:} Vị trí của thực thể trong tập tin, gồm 2 thuộc tính con:
     \begin{itemize}
-        \item \textbf{start\_line}: Dòng bắt đầu của thực thể code.
-        \item \textbf{end\_line}: Dòng kết thúc của thực thể code.
+        \item \textbf{start\_line:} Dòng bắt đầu của thực thể code.
+        \item \textbf{end\_line:} Dòng kết thúc của thực thể code.
     \end{itemize}
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{entity\_id (PK)}: Định danh nội bộ của thực thể code.
-    \item \textbf{entity\_name}: Tên của thành phần code (VD: processPayment, UserController).
-    \item \textbf{entity\_type}: Loại thành phần code (CLASS, METHOD, FUNCTION, INTERFACE, ENDPOINT).
-    \item \textbf{signature}: Cấu trúc chữ ký (VD: public void processPayment(String orderId, Double amount)).
-    \item \textbf{doc\_comment}: Đoạn comment/docstring nguyên bản đính kèm hàm/lớp (nếu có).
-    \item \textbf{created\_at}: Thời điểm thực thể code được bóc tách và lưu vào hệ thống.
-    \item \textbf{updated\_at}: Thời điểm cấu trúc của thực thể code thay đổi gần nhất.
+    \item \textbf{entity\_id (PK):} Định danh nội bộ của thực thể code.
+    \item \textbf{entity\_name:} Tên của thành phần code (VD: processPayment, UserController).
+    \item \textbf{entity\_type:} Loại thành phần code (CLASS, METHOD, FUNCTION, INTERFACE, ENDPOINT).
+    \item \textbf{signature:} Cấu trúc chữ ký (VD: public void processPayment(String orderId, Double amount)).
+    \item \textbf{doc\_comment:} Đoạn comment/docstring nguyên bản đính kèm hàm/lớp (nếu có).
+    \item \textbf{created\_at:} Thời điểm thực thể code được bóc tách và lưu vào hệ thống.
+    \item \textbf{updated\_at:} Thời điểm cấu trúc của thực thể code thay đổi gần nhất.
 \end{itemize}
-
-
-% =========================================================
-% DEPENDENCY
-% =========================================================
-
-\subsection{Dependency}
 
 \textbf{Dependency (Thực thể mối kết hợp):} Mối quan hệ phụ thuộc giữa các CodeEntity.
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{dependency\_id (PK)}: Định danh duy nhất cho bản ghi phụ thuộc.
-    \item \textbf{dependency\_type}: Loại quan hệ phụ thuộc (CALLS, INHERITS, IMPLEMENTS, USES, IMPORTS).
-    \item \textbf{created\_at}: Thời điểm hệ thống phân tích AST và ghi nhận mối quan hệ phụ thuộc.
+    \item \textbf{dependency\_id (PK):} Định danh duy nhất cho bản ghi phụ thuộc.
+    \item \textbf{dependency\_type:} Loại quan hệ phụ thuộc (CALLS, INHERITS, IMPLEMENTS, USES, IMPORTS).
+    \item \textbf{created\_at:} Thời điểm hệ thống phân tích AST và ghi nhận mối quan hệ phụ thuộc.
 \end{itemize}
 
 
-% =========================================================
-% C. NHÓM KHUÔN MẪU TÀI LIỆU
-% =========================================================
-
-\section{Nhóm Khuôn mẫu Tài liệu (Template Engine Domain)}
-
-\subsection{Template}
+\section*{C. Nhóm Khuôn mẫu Tài liệu (Template Engine Domain)}
 
 \textbf{Template (Thực thể mạnh):} Khuôn mẫu chuẩn để AI/User sinh tài liệu.
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Thuộc tính Đơn (Simple / Atomic Attribute):}
 
 \begin{itemize}
-    \item \textbf{template\_id (PK)}: Định danh duy nhất cho khuôn mẫu tài liệu.
-    \item \textbf{name}: Tên khuôn mẫu (VD: API Specification Template, System Architecture Doc).
-    \item \textbf{description}: Mô tả mục đích sử dụng và phạm vi áp dụng của khuôn mẫu.
-    \item \textbf{content\_structure}: Nội dung cấu trúc dàn ý mẫu/Prompt Markdown hướng dẫn AI và User.
-    \item \textbf{creator\_type}: Đối tượng khởi tạo khuôn mẫu (SYSTEM, USER, AI).
-    \item \textbf{status}: Trạng thái sử dụng (DRAFT, ACTIVE, ARCHIVED).
-    \item \textbf{created\_at}: Thời điểm tạo khuôn mẫu.
-    \item \textbf{updated\_at}: Thời điểm cập nhật dàn ý/nội dung khuôn mẫu gần nhất.
+    \item \textbf{template\_id (PK):} Định danh duy nhất cho khuôn mẫu tài liệu.
+    \item \textbf{name:} Tên khuôn mẫu (VD: API Specification Template, System Architecture Doc).
+    \item \textbf{description:} Mô tả mục đích sử dụng và phạm vi áp dụng của khuôn mẫu.
+    \item \textbf{content\_structure:} Nội dung cấu trúc dàn ý mẫu/Prompt Markdown hướng dẫn AI và User.
+    \item \textbf{creator\_type:} Đối tượng khởi tạo khuôn mẫu (SYSTEM, USER, AI).
+    \item \textbf{status:} Trạng thái sử dụng (DRAFT, ACTIVE, ARCHIVED).
+    \item \textbf{created\_at:} Thời điểm tạo khuôn mẫu.
+    \item \textbf{updated\_at:} Thời điểm cập nhật dàn ý/nội dung khuôn mẫu gần nhất.
 \end{itemize}
 
-
-% =========================================================
-% TEMPLATE SECTION
-% =========================================================
-
-\subsection{TemplateSection}
-
-\textbf{TemplateSection (Thực thể yếu -- phụ thuộc Template):} Mục con/heading trong cấu trúc dàn ý của Template.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{TemplateSection (Thực thể yếu - phụ thuộc Template):} Mục con/heading trong cấu trúc dàn ý của Template.
 
 \begin{itemize}
-    \item \textbf{section\_id (PK)}: Định danh duy nhất cho mục dàn ý.
-    \item \textbf{heading\_title}: Tiêu đề của mục (VD: 1. API Overview, 2. Request Payload).
-    \item \textbf{order\_index}: Thứ tự sắp xếp của mục trong Template.
-    \item \textbf{prompt\_instruction}: Câu lệnh hướng dẫn riêng cho AI khi sinh nội dung cho mục này.
-    \item \textbf{created\_at}: Thời điểm khởi tạo mục dàn ý.
-    \item \textbf{updated\_at}: Thời điểm cập nhật tiêu đề hoặc chỉ thị gần nhất.
+    \item \textbf{section\_id (PK):} Định danh duy nhất cho mục dàn ý.
+    \item \textbf{heading\_title:} Tiêu đề của mục (VD: 1. API Overview, 2. Request Payload).
+    \item \textbf{order\_index:} Thứ tự sắp xếp của mục trong Template.
+    \item \textbf{prompt\_instruction:} Câu lệnh hướng dẫn riêng cho AI khi sinh nội dung cho mục này.
+    \item \textbf{created\_at:} Thời điểm khởi tạo mục dàn ý.
+    \item \textbf{updated\_at:} Thời điểm cập nhật tiêu đề hoặc chỉ thị gần nhất.
 \end{itemize}
 
-
-% =========================================================
-% PLACEHOLDER
-% =========================================================
-
-\subsection{Placeholder}
-
-\textbf{Placeholder (Thực thể yếu -- phụ thuộc TemplateSection):} Biến/điểm chèn trong Section, làm nhiệm vụ nhận dữ liệu từ code.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Placeholder (Thực thể yếu - phụ thuộc TemplateSection):} Biến/điểm chèn trong Section, làm nhiệm vụ nhận dữ liệu từ code.
 
 \begin{itemize}
-    \item \textbf{placeholder\_id (PK)}: Định danh duy nhất cho điểm chèn biến.
-    \item \textbf{variable\_name}: Mã nhận diện biến (VD: \{\{api\_endpoint\}\}, \{\{request\_schema\}\}).
-    \item \textbf{expected\_data\_type}: Loại dữ liệu kỳ vọng từ code (STRING, JSON\_SCHEMA, MERMAID\_DIAGRAM, CODE\_SNIPPET).
-    \item \textbf{description}: Mô tả ý nghĩa và ngữ cảnh dữ liệu cần điền vào biến.
-    \item \textbf{is\_required}: Cờ xác định biến này bắt buộc AI phải lấp đầy hay không (true/false).
-    \item \textbf{created\_at}: Thời điểm tạo điểm chèn biến.
-    \item \textbf{updated\_at}: Thời điểm cập nhật thông tin biến gần nhất.
+    \item \textbf{placeholder\_id (PK):} Định danh duy nhất cho điểm chèn biến.
+    \item \textbf{variable\_name:} Mã nhận diện biến (VD: \{\{api\_endpoint\}\}, \{\{request\_schema\}\}).
+    \item \textbf{expected\_data\_type:} Loại dữ liệu kỳ vọng từ code (STRING, JSON\_SCHEMA, MERMAID\_DIAGRAM, CODE\_SNIPPET).
+    \item \textbf{description:} Mô tả ý nghĩa và ngữ cảnh dữ liệu cần điền vào biến.
+    \item \textbf{is\_required:} Cờ xác định biến này bắt buộc AI phải lấp đầy hay không (true/false).
+    \item \textbf{created\_at:} Thời điểm tạo điểm chèn biến.
+    \item \textbf{updated\_at:} Thời điểm cập nhật thông tin biến gần nhất.
 \end{itemize}
-
-
-% =========================================================
-% TEMPLATE MAPPING
-% =========================================================
-
-\subsection{TemplateMapping}
 
 \textbf{TemplateMapping (Thực thể mối kết hợp):} Ánh xạ trực tiếp giữa Placeholder và CodeEntity để AI trích xuất thông tin.
 
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
-
 \begin{itemize}
-    \item \textbf{mapping\_id (PK)}: Định danh duy nhất cho bản ghi ánh xạ trích xuất.
-    \item \textbf{extraction\_rule}: Quy tắc/Prompt chỉ thị chi tiết để AI biết cách lọc, biến đổi và trích xuất dữ liệu từ CodeEntity (VD: Extract Javadoc + Method Parameters as JSON).
-    \item \textbf{is\_active}: Trạng thái hiệu lực của quy tắc ánh xạ (true/false).
-    \item \textbf{created\_at}: Thời điểm khởi tạo quy tắc ánh xạ.
-    \item \textbf{updated\_at}: Thời điểm cập nhật quy tắc trích xuất gần nhất.
+    \item \textbf{mapping\_id (PK):} Định danh duy nhất cho bản ghi ánh xạ trích xuất.
+    \item \textbf{extraction\_rule:} Quy tắc/Prompt chỉ thị chi tiết để AI biết cách lọc, biến đổi và trích xuất dữ liệu từ CodeEntity (VD: Extract Javadoc + Method Parameters as JSON).
+    \item \textbf{is\_active:} Trạng thái hiệu lực của quy tắc ánh xạ (true/false).
+    \item \textbf{created\_at:} Thời điểm khởi tạo quy tắc ánh xạ.
+    \item \textbf{updated\_at:} Thời điểm cập nhật quy tắc trích xuất gần nhất.
 \end{itemize}
 
 
-% =========================================================
-% D. NHÓM TÀI LIỆU & VÒNG ĐỜI DỮ LIỆU
-% =========================================================
+\section*{D. Nhóm Tài liệu \& Vòng đời Dữ liệu (Documentation Domain)}
 
-\section{Nhóm Tài liệu \& Vòng đời Dữ liệu (Documentation Domain)}
-
-\subsection{Document}
-
-\textbf{Document (Thực thể mạnh):} Tài liệu gốc (README, API Reference, Architecture Guide, ADR,...).
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
+\textbf{Document (Thực thể mạnh):} Tài liệu gốc (README, API Reference, Architecture Guide, ADR...).
 
 \begin{itemize}
-    \item \textbf{document\_id (PK)}: Định danh duy nhất cho tài liệu chính thức.
-    \item \textbf{title}: Tên/Tiêu đề của tài liệu (VD: API Reference v2, System Architecture).
-    \item \textbf{document\_type}: Phân loại loại tài liệu (README, API\_REFERENCE, ARCHITECTURE\_GUIDE, ADR, CUSTOM).
-    \item \textbf{status}: Trạng thái vòng đời của tài liệu (PUBLISHED, ARCHIVED, DEPRECATED).
-    \item \textbf{created\_at}: Thời điểm khởi tạo tài liệu.
-    \item \textbf{updated\_at}: Thời điểm cập nhật tài liệu gần nhất.
-    \item \textbf{deleted\_at}: Thời điểm xóa mềm tài liệu (Nullable).
+    \item \textbf{document\_id (PK):} Định danh duy nhất cho tài liệu chính thức.
+    \item \textbf{title:} Tên/Tiêu đề của tài liệu (VD: API Reference v2, System Architecture).
+    \item \textbf{document\_type:} Phân loại loại tài liệu (README, API\_REFERENCE, ARCHITECTURE\_GUIDE, ADR, CUSTOM).
+    \item \textbf{status:} Trạng thái vòng đời của tài liệu (PUBLISHED, ARCHIVED, DEPRECATED).
+    \item \textbf{created\_at:} Thời điểm khởi tạo tài liệu.
+    \item \textbf{updated\_at:} Thời điểm cập nhật tài liệu.
+    \item \textbf{deleted\_at:} Thời điểm xóa mềm tài liệu (Nullable).
+\end{itemize}
+
+\textbf{DocumentVersion (Thực thể yếu - phụ thuộc Documentation):} Bản ghi nội dung tài liệu theo từng mốc thời gian và trạng thái (Draft, In Review, Approved, Published).
+
+\begin{itemize}
+    \item \textbf{version\_id (PK):} Định danh duy nhất cho bản ghi phiên bản.
+    \item \textbf{version\_number:} Số hiệu phiên bản tài liệu (VD: 1.0.0, 1.1.0, 2.0-draft).
+    \item \textbf{content:} Toàn bộ nội dung văn bản tài liệu dạng Markdown/HTML tại thời điểm chụp phiên bản.
+    \item \textbf{change\_summary:} Tóm tắt mô tả lý do hoặc nội dung những điểm thay đổi trong phiên bản này.
+    \item \textbf{status:} Trạng thái vòng đời phiên bản (DRAFT, IN\_REVIEW, APPROVED, PUBLISHED).
+    \item \textbf{ticket\_codes:} Danh sách các mã ticket/thẻ công việc liên quan từ các hệ thống bên ngoài (như Jira Ticket ID, GitHub Issue ID, ví dụ: PROJ-123, \#45), được lưu dưới dạng chuỗi văn bản đơn giản (Nullable, phân cách bằng dấu phẩy). Thuộc tính này giúp ghi nhận trực tiếp ngữ cảnh phát triển trên từng phiên bản tài liệu mà không cần duy trì thêm một thực thể phụ thuộc riêng biệt.
+    \item \textbf{created\_at:} Thời điểm khởi tạo bản ghi phiên bản.
+    \item \textbf{updated\_at:} Thời điểm cập nhật trạng thái phiên bản gần nhất.
+\end{itemize}
+
+\textbf{ChangeLog (Thực thể yếu - phụ thuộc DocumentVersion):} Lịch sử vết thay đổi chi tiết giữa các phiên bản tài liệu.
+
+\begin{itemize}
+    \item \textbf{log\_id (PK):} Định danh duy nhất cho bản ghi nhật ký thay đổi.
+    \item \textbf{change\_type:} Loại thao tác biến đổi (ADDED, MODIFIED, DELETED, RESTORED).
+    \item \textbf{change\_description:} Mô tả tóm tắt ý nghĩa sự thay đổi.
+    \item \textbf{diff\_content:} Nội dung chênh lệch chi tiết (dạng Git patch / JSON delta) để dựng giao diện so sánh code/doc.
+    \item \textbf{created\_at:} Thời điểm ghi nhận vết thay đổi.
+    \item \textbf{updated\_at:} Thời điểm cập nhật bản ghi nhật ký (nếu có bổ sung metadata).
 \end{itemize}
 
 
-% =========================================================
-% DOCUMENT VERSION
-% =========================================================
-
-\subsection{DocumentVersion}
-
-\textbf{DocumentVersion (Thực thể yếu -- phụ thuộc Documentation):} Bản ghi nội dung tài liệu theo từng mốc thời gian và trạng thái (Draft, In Review, Approved, Published).
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
-
-\begin{itemize}
-    \item \textbf{version\_id (PK)}: Định danh duy nhất cho bản ghi phiên bản.
-    \item \textbf{version\_number}: Số hiệu phiên bản tài liệu (VD: 1.0.0, 1.1.0, 2.0-draft).
-    \item \textbf{content}: Toàn bộ nội dung văn bản tài liệu dạng Markdown/HTML tại thời điểm chụp phiên bản.
-    \item \textbf{change\_summary}: Tóm tắt mô tả lý do hoặc nội dung những điểm thay đổi trong phiên bản này.
-    \item \textbf{status}: Trạng thái vòng đời phiên bản (DRAFT, IN\_REVIEW, APPROVED, PUBLISHED).
-    \item \textbf{created\_at}: Thời điểm khởi tạo bản ghi phiên bản.
-    \item \textbf{updated\_at}: Thời điểm cập nhật trạng thái phiên bản gần nhất.
-\end{itemize}
-
-
-% =========================================================
-% CHANGE LOG
-% =========================================================
-
-\subsection{ChangeLog}
-
-\textbf{ChangeLog (Thực thể yếu -- phụ thuộc DocumentVersion):} Lịch sử vết thay đổi chi tiết giữa các phiên bản tài liệu.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
-
-\begin{itemize}
-    \item \textbf{log\_id (PK)}: Định danh duy nhất cho bản ghi nhật ký thay đổi.
-    \item \textbf{change\_type}: Loại thao tác biến đổi (ADDED, MODIFIED, DELETED, RESTORED).
-    \item \textbf{change\_description}: Mô tả tóm tắt ý nghĩa sự thay đổi.
-    \item \textbf{diff\_content}: Nội dung chênh lệch chi tiết (dạng Git patch / JSON delta) để dựng giao diện so sánh code/doc.
-    \item \textbf{created\_at}: Thời điểm ghi nhận vết thay đổi.
-    \item \textbf{updated\_at}: Thời điểm cập nhật bản ghi nhật ký (nếu có bổ sung metadata).
-\end{itemize}
-
-
-% =========================================================
-% DOCUMENT ASSET
-% =========================================================
-
-\subsection{DocumentAsset}
-
-\textbf{DocumentAsset (Thực thể yếu -- phụ thuộc DocumentVersion):} Tài nguyên đa phương tiện (hình ảnh, sơ đồ) gắn kèm tài liệu.
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
-
-\begin{itemize}
-    \item \textbf{asset\_id (PK)}: Định danh duy nhất cho tài nguyên đa phương tiện.
-    \item \textbf{file\_name}: Tên file gốc hoặc tên sơ đồ (VD: architecture\_v1.png, sequence\_payment.svg).
-    \item \textbf{asset\_url}: Đường dẫn công khai/CDN đến tệp lưu trữ đa phương tiện.
-    \item \textbf{asset\_type}: Phân loại định dạng tài nguyên (IMAGE, DIAGRAM, ARCH\_SCHEMA, ATTACHMENT).
-    \item \textbf{created\_at}: Thời điểm tải lên hoặc xuất sơ đồ vào hệ thống.
-    \item \textbf{updated\_at}: Thời điểm cập nhật thông tin tài nguyên gần nhất.
-\end{itemize}
-
-
-% =========================================================
-% TICKET REFERENCE
-% =========================================================
-
-\subsection{TicketReference}
-
-\textbf{TicketReference (Thực thể phụ thuộc):} Mã tham chiếu liên kết đến các công cụ quản lý công việc bên ngoài (Jira Ticket ID, GitHub Issue).
-
-\subsubsection*{Thuộc tính Đơn (Simple / Atomic Attribute)}
-
-\begin{itemize}
-    \item \textbf{reference\_id (PK)}: Định danh duy nhất cho bản ghi tham chiếu ticket.
-    \item \textbf{platform}: Tên hệ thống quản lý công việc bên ngoài (JIRA, GITHUB\_ISSUE, LINEAR, TRELLO).
-    \item \textbf{ticket\_code}: Mã định danh ticket trên hệ thống gốc (VD: PROJ-123, \#45).
-    \item \textbf{created\_at}: Thời điểm tạo bản ghi liên kết.
-    \item \textbf{updated\_at}: Thời điểm cập nhật liên kết gần nhất.
-\end{itemize}
-
-
-% =========================================================
-% E. NHÓM KIỂM DUYỆT & PHÊ DUYỆT
-% =========================================================
-
-\section{Nhóm Kiểm duyệt \& Phê duyệt (Review \& Governance Domain)}
-
-\subsection{Review}
+\section*{E. Nhóm Kiểm duyệt \& Phê duyệt (Review \& Governance Domain)}
 
 \textbf{Review (Thực thể mối kết hợp/Sự kiện):} Tiến trình Staff thực hiện đánh giá kỹ thuật trên một DocumentVersion.
 
-\subsubsection*{Thuộc tính Đơn}
-
 \begin{itemize}
-    \item \textbf{review\_id (PK)}: Định danh duy nhất cho phiên đánh giá kỹ thuật.
-    \item \textbf{status}: Trạng thái của tiến trình review (PENDING, IN\_PROGRESS, COMPLETED).
-    \item \textbf{decision}: Kết quả thẩm định của reviewer (APPROVED, REJECTED, CHANGES\_REQUESTED).
-    \item \textbf{summary\_notes}: Nhận xét hoặc ghi chú tổng quan của reviewer (Nullable).
-    \item \textbf{created\_at}: Thời điểm bắt đầu phiên đánh giá.
-    \item \textbf{updated\_at}: Thời điểm chốt kết quả hoặc cập nhật tiến trình review.
+    \item \textbf{review\_id (PK):} Định danh duy nhất cho phiên đánh giá kỹ thuật.
+    \item \textbf{status:} Trạng thái của tiến trình review (PENDING, IN\_PROGRESS, COMPLETED).
+    \item \textbf{decision:} Kết quả thẩm định của reviewer (APPROVED, REJECTED, CHANGES\_REQUESTED).
+    \item \textbf{summary\_notes:} Nhận xét hoặc ghi chú tổng quan của reviewer (Nullable).
+    \item \textbf{created\_at:} Thời điểm bắt đầu phiên đánh giá.
+    \item \textbf{updated\_at:} Thời điểm chốt kết quả hoặc cập nhật tiến trình review.
 \end{itemize}
 
-
-% =========================================================
-% REVIEW COMMENT
-% =========================================================
-
-\subsection{ReviewComment}
-
-\textbf{ReviewComment (Thực thể yếu -- phụ thuộc Review):} Phản hồi, góp ý chi tiết trong quá trình kiểm duyệt.
-
-\subsubsection*{Thuộc tính Đơn}
+\textbf{ReviewComment (Thực thể yếu - phụ thuộc Review):} Phản hồi, góp ý chi tiết trong quá trình kiểm duyệt.
 
 \begin{itemize}
-    \item \textbf{comment\_id (PK)}: Định danh duy nhất cho bản ghi bình luận/góp ý.
-    \item \textbf{content}: Nội dung chi tiết của lời nhận xét, phản hồi.
-    \item \textbf{is\_resolved}: Trạng thái xử lý góp ý (false: Chưa sửa / true: Đã sửa xong).
-    \item \textbf{created\_at}: Thời điểm gửi bình luận.
-    \item \textbf{updated\_at}: Thời điểm cập nhật nội dung bình luận gần nhất.
+    \item \textbf{comment\_id (PK):} Định danh duy nhất cho bản ghi bình luận/góp ý.
+    \item \textbf{content:} Nội dung chi tiết của lời nhận xét, phản hồi.
+    \item \textbf{is\_resolved:} Trạng thái xử lý góp ý (false: Chưa sửa / true: Đã sửa xong).
+    \item \textbf{created\_at:} Thời điểm gửi bình luận.
+    \item \textbf{updated\_at:} Thời điểm cập nhật nội dung bình luận gần nhất.
 \end{itemize}
-
-
-% =========================================================
-% APPROVAL
-% =========================================================
-
-\subsection{Approval}
 
 \textbf{Approval (Thực thể mối kết hợp/Sự kiện):} Quyết định phê duyệt xuất bản/commit tài liệu chính thức từ Manager.
 
-\subsubsection*{Thuộc tính Đơn}
-
 \begin{itemize}
-    \item \textbf{approval\_id (PK)}: Định danh duy nhất cho bản ghi quyết định phê duyệt.
-    \item \textbf{decision}: Trạng thái/Kết quả quyết định (APPROVED, REJECTED).
-    \item \textbf{rejection\_reason}: Lý do từ chối xuất bản (Nullable, dùng khi decision = REJECTED).
-    \item \textbf{approved\_at}: Mốc thời gian ra quyết định phê duyệt hoặc từ chối.
+    \item \textbf{approval\_id (PK):} Định danh duy nhất cho bản ghi quyết định phê duyệt.
+    \item \textbf{decision:} Trạng thái/Kết quả quyết định (APPROVED, REJECTED).
+    \item \textbf{rejection\_reason:} Lý do từ chối xuất bản (Nullable, dùng khi decision = REJECTED).
+    \item \textbf{approved\_at:} Mốc thời gian ra quyết định phê duyệt hoặc từ chối.
 \end{itemize}
 
 
-% =========================================================
-% F. NHÓM AI EVIDENCE, GIÁM SÁT & KIỂM TOÁN
-% =========================================================
+\section*{F. Nhóm AI Evidence, Giám sát \& Kiểm toán (AI Evidence \& Observability Domain)}
 
-\section{Nhóm AI Evidence, Giám sát \& Kiểm toán (AI Evidence \& Observability Domain)}
-
-\subsection{GroundingEvidence}
-
-\textbf{GroundingEvidence (Thực thể yếu -- phụ thuộc DocumentVersion):} Bảng minh chứng chứa liên kết nguồn gốc (File, CodeEntity, Commit) AI dùng để tạo nội dung, phục vụ chống hallucination.
-
-\subsubsection*{Thuộc tính Đơn}
+\textbf{GroundingEvidence (Thực thể yếu - phụ thuộc DocumentVersion):} Bảng minh chứng chứa liên kết nguồn gốc (File, CodeEntity, Commit) AI dùng để tạo nội dung, phục vụ chống hallucination.
 
 \begin{itemize}
-    \item \textbf{evidence\_id (PK)}: Định danh duy nhất cho bản ghi bằng chứng minh chứng.
-    \item \textbf{snippet\_content}: Đoạn mã nguồn hoặc văn bản thô trích xuất từ code làm căn cứ trực tiếp cho AI sinh nội dung.
-    \item \textbf{purpose}: Phân loại mục đích lưu vết (HALLUCINATION\_PREVENTION, CODE\_REFERENCE, AST\_VERIFICATION).
-    \item \textbf{created\_at}: Thời điểm ghi nhận bản ghi bằng chứng.
+    \item \textbf{evidence\_id (PK):} Định danh duy nhất cho bản ghi bằng chứng minh chứng.
+    \item \textbf{snippet\_content:} Đoạn mã nguồn hoặc văn bản thô trích xuất từ code làm căn cứ trực tiếp cho AI sinh nội dung.
+    \item \textbf{purpose:} Phân loại mục đích lưu vết (HALLUCINATION\_PREVENTION, CODE\_REFERENCE, AST\_VERIFICATION).
+    \item \textbf{created\_at:} Thời điểm ghi nhận bản ghi bằng chứng.
 \end{itemize}
-
-
-% =========================================================
-% DRIFT ALERT
-% =========================================================
-
-\subsection{DriftAlert}
 
 \textbf{DriftAlert (Thực thể sự kiện):} Cảnh báo phát hiện tài liệu bị lệch ngữ nghĩa/lỗi thời so với code mới.
 
-\subsubsection*{Thuộc tính Khóa (Key Attribute)}
+\textbf{Thuộc tính Khóa (Key Attribute):}
 
 \begin{itemize}
-    \item \textbf{alert\_id}: Định danh duy nhất cho từng bản ghi cảnh báo.
+    \item \textbf{alert\_id:} Định danh duy nhất cho từng bản ghi cảnh báo.
 \end{itemize}
 
-\subsubsection*{Thuộc tính Đơn / Nguyên tố (Simple / Atomic Attributes)}
+\textbf{Thuộc tính Đơn / Nguyên tố (Simple / Atomic Attributes):}
 
 \begin{itemize}
-    \item \textbf{drift\_type}: Phân loại hình thức lệch pha (SEMANTIC, OUTDATED).
-    \item \textbf{status}: Trạng thái xử lý cảnh báo (OPEN, RESOLVED, IGNORED).
-    \item \textbf{detected\_at}: Thời điểm hệ thống AI quét và phát hiện ra độ lệch.
-\end{itemize}
-
-
-% =========================================================
-% REPORT
-% =========================================================
-
-\subsection{Report}
-
-\textbf{Report (Thực thể nghiệp vụ):} Dữ liệu báo cáo tổng quan về chất lượng tài liệu, tình trạng drift và chỉ số hệ thống.
-
-\subsubsection*{Thuộc tính Đơn}
-
-\begin{itemize}
-    \item \textbf{report\_id (PK)}: Định danh duy nhất cho bản ghi báo cáo.
-    \item \textbf{report\_type}: Phân loại báo cáo (DAILY, WEEKLY, MONTHLY).
-    \item \textbf{total\_documents}: Tổng số tài liệu hiện có trong workspace.
-    \item \textbf{drifted\_documents\_count}: Số lượng tài liệu đang bị cảnh báo lệch pha/lỗi thời.
-    \item \textbf{ai\_generations\_count}: Tổng số lượt gọi AI sinh tài liệu trong kỳ.
-    \item \textbf{generated\_at}: Mốc thời gian chốt số liệu báo cáo.
-\end{itemize}
-
-
-% =========================================================
-% AUDIT LOG
-% =========================================================
-
-\subsection{AuditLog}
-
-\textbf{AuditLog (Thực thể nhật ký):} Lưu vết kiểm toán toàn bộ hành vi quản trị và thay đổi quan trọng trong hệ thống.
-
-\subsubsection*{Thuộc tính Đơn}
-
-\begin{itemize}
-    \item \textbf{log\_id (PK)}: Định danh duy nhất cho bản ghi nhật ký kiểm toán.
-    \item \textbf{action}: Tên thao tác thực hiện (UPDATE\_ROLE, DELETE\_DOC, CHANGE\_POLICY, DISABLE\_USER).
-    \item \textbf{target\_entity}: Tên bảng/loại đối tượng bị tác động (Role, Workspace, Document).
-    \item \textbf{target\_entity\_id}: Khóa chính của đối tượng bị tác động.
-    \item \textbf{details}: Chi tiết biến động dữ liệu ngắn gọn (Nullable).
-    \item \textbf{created\_at}: Thời điểm xảy ra sự kiện kiểm toán.
-\end{itemize}
-
-
-% =========================================================
-% AI JOB
-% =========================================================
-
-\subsection{AIJob}
-
-\textbf{AIJob (Thực thể tác vụ/tiến trình):} Tiến trình xử lý ngầm của AI (generate, update, detect drift, indexing, RAG).
-
-\subsubsection*{1. Thuộc tính Khóa (Key Attribute)}
-
-\begin{itemize}
-    \item \textbf{job\_id (PK)}: Định danh duy nhất cho từng tiến trình xử lý ngầm.
-\end{itemize}
-
-\subsubsection*{2. Thuộc tính Đơn (Atomic Attributes)}
-
-\begin{itemize}
-    \item \textbf{job\_type}: Phân loại tác vụ AI (GENERATE\_DOC, UPDATE\_AST, DETECT\_DRIFT, INDEX\_RAG, SYNC\_REPO).
-    \item \textbf{status}: Trạng thái vòng đời của job (PENDING, PROCESSING, COMPLETED, FAILED).
-    \item \textbf{target\_entity\_type}: Tên loại đối tượng mục tiêu (Document, PullRequest, Repository, DocumentDraft).
-    \item \textbf{target\_entity\_id}: Khóa chính của đối tượng mục tiêu đang được xử lý.
-    \item \textbf{error\_message}: Dòng thông báo lỗi chi tiết khi trạng thái là FAILED (Nullable).
-\end{itemize}
-
-\subsubsection*{3. Thuộc tính Thời gian (Temporal Attributes)}
-
-\begin{itemize}
-    \item \textbf{created\_at}: Thời điểm job được đưa vào hàng đợi (Queue).
-    \item \textbf{started\_at}: Thời điểm worker bắt đầu thực thi job.
-    \item \textbf{finished\_at}: Thời điểm job hoàn thành hoặc bị ngắt do lỗi (Nullable).
-\end{itemize}
-
-\subsubsection*{4. Thuộc tính Dẫn xuất (Derived Attribute)}
-
-\begin{itemize}
-    \item \textbf{execution\_time}: Thời gian xử lý thực tế của job, không lưu cố định trong CSDL, được tính bằng:
-    \[
-        execution\_time = finished\_at - started\_at
-    \]
+    \item \textbf{drift\_type:} Phân loại hình thức lệch pha (SEMANTIC, OUTDATED).
+    \item \textbf{status:} Trạng thái xử lý cảnh báo (OPEN, RESOLVED, IGNORED).
+    \item \textbf{detected\_at:} Thời điểm hệ thống AI quét và phát hiện ra độ lệch.
 \end{itemize}
