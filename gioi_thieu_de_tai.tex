@@ -1,1 +1,38 @@
-Giới Thiệu Đề Tài
+\section*{Tổng quan đề tài}
+Trong quy trình phát triển phần mềm hiện đại, việc duy trì tính nhất quán giữa tài liệu kỹ thuật (\textit{Documentation}) và mã nguồn thực tế (\textit{Git Codebase}) là một thách thức lớn. Hiện tượng \textbf{"Trôi lệch tài liệu"} (\textit{Documentation Drift}) thường xuyên xảy ra khi mã nguồn liên tục được cập nhật nhưng tài liệu không được điều chỉnh kịp thời, dẫn đến lãng phí thời gian bảo trì và gia tăng rủi ro trong vận hành hệ thống.
+
+Hệ thống \textbf{LivingDocs} ra đời như một giải pháp toàn diện giúp tự động hóa việc đồng bộ, kiểm duyệt và quản lý tài liệu kỹ thuật theo vết mã nguồn. Hệ thống tích hợp công nghệ AI (\textit{AI Grounding}) để đối soát minh chứng trực tiếp giữa các đoạn mã nguồn với văn bản tài liệu, phát hiện và cảnh báo kịp thời sự trôi lệch dữ liệu.
+
+\section*{Phạm vi Kiến trúc Cơ sở Dữ liệu}
+Nhóm thực hiện đề tài xây dựng và thiết kế kiến trúc Cơ sở dữ liệu (CSDL) cho hệ thống \textbf{LivingDocs}, bao phủ 5 phân hệ nghiệp vụ nòng cốt:
+
+\begin{itemize}
+    \item \textbf{Phân hệ Quản trị \& Phân quyền (\textit{Auth \& Workspace Domain}):} Quản lý thông tin người dùng (\texttt{users}), tổ chức không gian làm việc (\texttt{workspaces}), cấu trúc vai trò (\texttt{roles}) và chi tiết quyền hạn (\texttt{permissions}).
+    \item \textbf{Phân hệ Tích hợp Mã nguồn (\textit{Git Repository Domain}):} Đồng bộ cấu trúc dữ liệu từ Git bao gồm kho mã nguồn (\texttt{repositories}), nhánh (\texttt{branches}), lịch sử thay đổi (\texttt{commits}), yêu cầu hợp nhất (\texttt{pull\_requests}) và các thực thể mã nguồn thu được từ cây AST (\texttt{code\_entities}).
+    \item \textbf{Phân hệ Tài liệu \& AI Minh chứng (\textit{Documentation \& AI Domain}):} Quản lý dàn ý mẫu (\texttt{templates}), các mục dàn ý (\texttt{template\_sections}), biến chèn (\texttt{placeholders}), tài liệu (\texttt{documents}), các phiên bản tài liệu (\texttt{document\_versions}), dữ liệu đối soát AI (\texttt{grounding\_evidences}) và hệ thống cảnh báo trôi lệch (\texttt{drift\_alerts}).
+    \item \textbf{Phân hệ Kiểm duyệt Kỹ thuật (\textit{Code Review Domain}):} Quản lý các phiên review tài liệu (\texttt{reviews}), các quyết định phê duyệt (\texttt{approvals}) và luồng bình luận góp ý (\texttt{review\_comments}).
+    \item \textbf{Phân hệ Cấu hình \& Nhật ký (\textit{Preferences \& Audit Logs}):} Quản lý cấu hình thông báo cá nhân (\texttt{user\_notification\_preferences}), tích hợp kết nối GitHub (\texttt{github\_connections}) và lưu trữ nhật ký biến động hệ thống (\texttt{change\_logs}).
+\end{itemize}
+
+\section*{Phương pháp Nghiên cứu và Quy trình Triển khai CSDL}
+Để đảm bảo CSDL của hệ thống LivingDocs đạt tính toàn vẹn, tối ưu hiệu năng và triệt tiêu dư thừa dữ liệu, đồ án áp dụng quy trình thiết kế CSDL chuẩn mực qua 3 mức biểu diễn kết hợp triển khai các thuật toán nền tảng của môn học Thiết kế Cơ sở Dữ liệu:
+
+\begin{center}
+\begin{small}
+\begin{verbatim}
+                 Đặc tả Yêu cầu Nghiệp vụ
+                            |
+                            |  (Áp dụng Thuật toán 2.1)
+                            v
+           Mức Quan niệm (Conceptual ERD / UML)
+                            |
+                            |  (Áp dụng Thuật toán 2.2 & 2.3)
+                            v
+         Mức Lô-gíc (Logical Relational Schema)
+                            |
+                            |  (Phân tích FDs & Chứng minh 3NF)
+                            v
+            Mức Vật lý (Physical DDL Scripts)
+\end{verbatim}
+\end{small}
+\end{center}
