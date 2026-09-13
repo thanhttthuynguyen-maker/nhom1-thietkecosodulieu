@@ -1,35 +1,79 @@
-This is the introductory chapter. Lorem\index{lorem} ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\subsection{Dữ liệu mô phỏng (Mock Data)}
 
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng User}
+\label{tab:mock_user}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllll}
+\toprule
+user\_id & email & password\_hash & FullName & NotificationPreferences & status & created\_at & updated\_at & deleted\_at \\
+\midrule
+U001 & user1@email.com & bcrypt\_hash\_xyz & Chiến 1 & EMAIL & ACTIVE & 2026-05-24 06:15:24 & 2026-05-28 05:15:24 & NaN \\
+U002 & user2@email.com & bcrypt\_hash\_xyz & Hoàng 2 & EMAIL, SYSTEM & ACTIVE & 2026-07-13 02:15:24 & 2026-07-22 01:15:24 & NaN \\
+U003 & user3@email.com & bcrypt\_hash\_xyz & Minh 3 & EMAIL, SYSTEM & ACTIVE & 2026-05-18 10:15:24 & 2026-09-10 03:15:24 & NaN \\
+U004 & user4@email.com & bcrypt\_hash\_xyz & Phúc 4 & EMAIL, SYSTEM & ACTIVE & 2026-05-29 20:15:24 & 2026-06-02 20:15:24 & NaN \\
+U005 & user5@email.com & bcrypt\_hash\_xyz & Bảo 5 & EMAIL, SYSTEM & ACTIVE & 2026-07-17 02:15:24 & 2026-08-18 21:15:24 & NaN \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\footnote{Excepteur sint, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.}
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng Workspace}
+\label{tab:mock_workspace}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllll}
+\toprule
+workspace\_id & name & description & status & created\_at & updated\_at & deleted\_at \\
+\midrule
+WS001 & Dự án LivingDocs Core 1 & Không gian quản lý repo tài liệu & ACTIVE & 2026-06-05 17:15:24 & 2026-06-25 18:15:24 & NaN \\
+WS002 & Dự án LivingDocs Core 2 & Không gian quản lý repo tài liệu & ACTIVE & 2026-07-02 07:15:24 & 2026-07-25 09:15:24 & NaN \\
+WS003 & Dự án LivingDocs Core 3 & Không gian quản lý repo tài liệu & ACTIVE & 2026-06-26 07:15:24 & 2026-07-26 19:15:24 & NaN \\
+WS004 & Dự án LivingDocs Core 4 & Không gian quản lý repo tài liệu & ACTIVE & 2026-07-26 15:15:24 & 2026-08-11 09:15:24 & NaN \\
+WS005 & Dự án LivingDocs Core 5 & Không gian quản lý repo tài liệu & ACTIVE & 2026-06-26 08:15:24 & 2026-07-06 21:15:24 & NaN \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-\section{Answer to the question} 
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng Document}
+\label{tab:mock_document}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllll}
+\toprule
+document\_id & workspace\_id & user\_id & title & document\_type & status & created\_at & updated\_at & deleted\_at \\
+\midrule
+DOC\_WS001\_1 & WS001 & U037 & API\_REFERENCE - Module 1 & ARCHITECTURE\_GUIDE & PUBLISHED & 2026-08-28 08:15:24 & 2026-09-07 20:15:24 & NaN \\
+DOC\_WS001\_2 & WS001 & U005 & README - Module 2 & API\_REFERENCE & PUBLISHED & 2026-08-18 10:15:24 & 2026-09-05 17:15:24 & NaN \\
+DOC\_WS002\_1 & WS002 & U014 & API\_REFERENCE - Module 1 & README & PUBLISHED & 2026-08-26 18:15:24 & 2026-08-28 18:15:24 & NaN \\
+DOC\_WS002\_2 & WS002 & U046 & API\_REFERENCE - Module 2 & ARCHITECTURE\_GUIDE & PUBLISHED & 2026-08-20 06:15:24 & 2026-09-03 20:15:24 & NaN \\
+DOC\_WS003\_1 & WS003 & U036 & README - Module 1 & ADR & ARCHIVED & 2026-07-31 17:15:24 & 2026-08-26 08:15:24 & NaN \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\footnote{Sunt in culpa\index{culpa} qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non proident. Sunt in culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non proident. Sunt in culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat cupidatat non proident.} Duis aute irure dolor in reprehenderit in voluptate velit\index{velit} esse cillum dolore eu fugiat nulla pariatur\index{pariatur}. 
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng CodeEntity}
+\label{tab:mock_codeentity}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllll}
+\toprule
+entity\_id & file\_id & entity\_name & entity\_type & signature & doc\_comment & position & created\_at & updated\_at \\
+\midrule
+CE\_F\_REPO\_WS001\_1\_1\_1 & F\_REPO\_WS001\_1\_1 & processData1 & METHOD & void processData1(String orderId) & API logic doc & \{"start\_line": 10, "end\_line": 25\} & 2026-07-31 20:15:24 & 2026-08-20 14:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_2 & F\_REPO\_WS001\_1\_1 & processData2 & METHOD & void processData2(String orderId) & API logic doc & \{"start\_line": 20, "end\_line": 35\} & 2026-07-30 08:15:24 & 2026-09-08 07:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_3 & F\_REPO\_WS001\_1\_1 & processData3 & METHOD & void processData3(String orderId) & API logic doc & \{"start\_line": 30, "end\_line": 45\} & 2026-09-01 03:15:24 & 2026-09-11 09:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_4 & F\_REPO\_WS001\_1\_1 & processData4 & METHOD & void processData4(String orderId) & API logic doc & \{"start\_line": 40, "end\_line": 55\} & 2026-08-21 12:15:24 & 2026-08-23 17:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_5 & F\_REPO\_WS001\_1\_1 & processData5 & METHOD & void processData5(String orderId) & API logic doc & \{"start\_line": 50, "end\_line": 65\} & 2026-08-23 04:15:24 & 2026-09-09 06:15:24 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
-\section{Positioning in the literature} 
-
-Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo.\footnote{Obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.} Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit amet consectetur adipiscing velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem.
-
-\section{A section} 
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam varius nisi vel ipsum vehicula, at finibus justo ultrices. Morbi vitae leo vitae purus dapibus tempor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum sed nisi sit amet\index{amet} mi suscipit suscipit non nec tortor. Vivamus non ligula id turpis tempus fermentum ac sit amet leo. Etiam sit amet magna at turpis fringilla vestibulum. Sed non nisl eu velit consectetur malesuada eget eu libero. Sed a nisi sit amet velit facilisis feugiat nec at est. Quisque nec ultrices purus. Maecenas gravida mauris vel nulla eleifend, non dictum enim ullamcorper. Sed sit amet turpis in lectus dictum facilisis. Donec sed eros sed dui consectetur dictum. Sed volutpat tortor nec odio viverra, id sodales enim congue. Maecenas sit amet eros vitae nisl placerat mattis.
-
-\subsection{A subsection} 
-
-Maecenas nec risus nec nibh hendrerit ultricies. Nulla facilisi. Maecenas in magna eget felis dictum tempus. Donec vehicula, dolor nec dictum aliquam, arcu libero commodo metus, nec varius neque magna at nulla. Sed nec arcu sollicitudin, scelerisque tortor nec, viverra arcu. Cras suscipit mi vitae erat varius, nec ullamcorper lectus tristique. Maecenas aliquet lorem vitae velit ullamcorper, eget pellentesque velit rhoncus. Sed at risus at arcu hendrerit facilisis. Sed a massa hendrerit, rutrum orci ac, condimentum enim. Donec eget vestibulum eros. In hac habitasse platea dictumst.
-
-\subsection{Yet another subsection} 
-
-Curabitur maximus libero id magna bibendum fringilla. Curabitur ultricies dictum justo. Nam efficitur lobortis sapien a tristique. Vivamus vestibulum, sem nec dignissim scelerisque, purus nunc volutpat ligula, vitae aliquam libero orci nec augue. Nullam semper pulvinar turpis eget finibus. Suspendisse potenti. Nunc posuere arcu eget mauris venenatis, id pharetra sapien dapibus. Etiam at dictum urna. Integer gravida, odio sit amet mattis scelerisque, ipsum arcu ullamcorper sem, in vehicula sapien elit in tellus. Cras nec justo eu mauris volutpat dignissim. Curabitur malesuada purus sed tortor sollicitudin, in ullamcorper risus suscipit.
-
-\section{A final introduction section} 
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor tortor non libero suscipit, nec vehicula velit consequat. Integer nec est at lacus venenatis malesuada sed nec tortor. Sed aliquam urna non nunc luctus, eget cursus purus consequat. Vivamus a purus nec purus finibus ultricies. Suspendisse potenti. Sed euismod purus ut lectus pulvinar, sit amet accumsan turpis tincidunt. Vivamus auctor tempor mauris, eu convallis leo dignissim nec. Sed scelerisque justo a felis ullamcorper, at fermentum lorem mattis. Etiam ultricies ligula et metus commodo, eget placerat est tempus. Cras tempus ex eu velit consectetur, id mattis sapien pharetra. Sed lobortis, libero quis sollicitudin congue, odio sapien consequat lacus, sed volutpat nibh nisl sit amet ex. Maecenas sollicitudin velit at nisi scelerisque, non venenatis libero tempor. Sed in vehicula ligula. Sed vulputate libero nec tristique lobortis.
-
-\paragraph{Pellentesque habitant morbi tristique} Senectus et netus et malesuada fames ac turpis egestas. Aliquam erat volutpat. Donec tincidunt, quam sed pellentesque fermentum, lorem dolor consequat lectus, at pulvinar arcu ipsum in ligula. Mauris pretium ipsum id sapien posuere vehicula. Vivamus consectetur, turpis vitae pellentesque molestie, libero odio venenatis mauris, id vestibulum nisl nulla sit amet enim. Cras ultricies consectetur ex, sit amet vestibulum lacus hendrerit vel. Sed lacinia eleifend purus. Nunc dignissim eros et sapien lacinia eleifend. Curabitur sit amet velit eu metus suscipit tempus. Maecenas in libero felis. Sed quis eros sapien. Suspendisse potenti. Curabitur porta est sed enim efficitur, a tempor justo fermentum. Vivamus pulvinar enim vitae semper rutrum. Aenean non mauris sed lectus vestibulum feugiat eget et ipsum. Donec semper vitae enim at ultricies. Sed eu arcu justo.
-
-\paragraph{Nullam varius nisi vel ipsum vehicula, at finibus justo ultrices} Morbi vitae leo vitae purus dapibus tempor. Vestibulum sed nisi sit amet mi suscipit suscipit non nec tortor. Vivamus non ligula id turpis tempus fermentum ac sit amet leo. Etiam sit amet magna at turpis fringilla vestibulum. Sed non nisl eu velit consectetur malesuada eget eu libero. Sed a nisi sit amet velit facilisis feugiat nec at est. Quisque nec ultrices purus. Maecenas gravida mauris vel nulla eleifend, non dictum enim ullamcorper. Sed sit amet turpis in lectus dictum facilisis. Donec sed eros sed dui consectetur dictum. Sed volutpat tortor nec odio viverra, id sodales enim congue. Maecenas sit amet eros vitae nisl placerat mattis.
+\textit{Lưu ý: Trên đây là trích xuất 5 dòng dữ liệu mẫu đại diện cho 4 thực thể cốt lõi. Do khối lượng dữ liệu mô phỏng thực tế rất lớn (hơn 1000 bản ghi trên 27 bảng), toàn bộ file Excel \texttt{Task5\_MockData\_LivingDocs\_Final.xlsx} được công khai tại kho chứa dự án mã nguồn mở của nhóm.}
