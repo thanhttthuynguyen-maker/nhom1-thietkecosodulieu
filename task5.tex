@@ -1,0 +1,79 @@
+\subsection{Dữ liệu mô phỏng (Mock Data)}
+
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng User}
+\label{tab:mock_user}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllll}
+\toprule
+user\_id & email & password\_hash & FullName & NotificationPreferences & status & created\_at & updated\_at & deleted\_at \\
+\midrule
+U001 & user1@email.com & bcrypt\_hash\_xyz & Chiến 1 & EMAIL & ACTIVE & 2026-05-24 06:15:24 & 2026-05-28 05:15:24 & NaN \\
+U002 & user2@email.com & bcrypt\_hash\_xyz & Hoàng 2 & EMAIL, SYSTEM & ACTIVE & 2026-07-13 02:15:24 & 2026-07-22 01:15:24 & NaN \\
+U003 & user3@email.com & bcrypt\_hash\_xyz & Minh 3 & EMAIL, SYSTEM & ACTIVE & 2026-05-18 10:15:24 & 2026-09-10 03:15:24 & NaN \\
+U004 & user4@email.com & bcrypt\_hash\_xyz & Phúc 4 & EMAIL, SYSTEM & ACTIVE & 2026-05-29 20:15:24 & 2026-06-02 20:15:24 & NaN \\
+U005 & user5@email.com & bcrypt\_hash\_xyz & Bảo 5 & EMAIL, SYSTEM & ACTIVE & 2026-07-17 02:15:24 & 2026-08-18 21:15:24 & NaN \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng Workspace}
+\label{tab:mock_workspace}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllll}
+\toprule
+workspace\_id & name & description & status & created\_at & updated\_at & deleted\_at \\
+\midrule
+WS001 & Dự án LivingDocs Core 1 & Không gian quản lý repo tài liệu & ACTIVE & 2026-06-05 17:15:24 & 2026-06-25 18:15:24 & NaN \\
+WS002 & Dự án LivingDocs Core 2 & Không gian quản lý repo tài liệu & ACTIVE & 2026-07-02 07:15:24 & 2026-07-25 09:15:24 & NaN \\
+WS003 & Dự án LivingDocs Core 3 & Không gian quản lý repo tài liệu & ACTIVE & 2026-06-26 07:15:24 & 2026-07-26 19:15:24 & NaN \\
+WS004 & Dự án LivingDocs Core 4 & Không gian quản lý repo tài liệu & ACTIVE & 2026-07-26 15:15:24 & 2026-08-11 09:15:24 & NaN \\
+WS005 & Dự án LivingDocs Core 5 & Không gian quản lý repo tài liệu & ACTIVE & 2026-06-26 08:15:24 & 2026-07-06 21:15:24 & NaN \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng Document}
+\label{tab:mock_document}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllll}
+\toprule
+document\_id & workspace\_id & user\_id & title & document\_type & status & created\_at & updated\_at & deleted\_at \\
+\midrule
+DOC\_WS001\_1 & WS001 & U037 & API\_REFERENCE - Module 1 & ARCHITECTURE\_GUIDE & PUBLISHED & 2026-08-28 08:15:24 & 2026-09-07 20:15:24 & NaN \\
+DOC\_WS001\_2 & WS001 & U005 & README - Module 2 & API\_REFERENCE & PUBLISHED & 2026-08-18 10:15:24 & 2026-09-05 17:15:24 & NaN \\
+DOC\_WS002\_1 & WS002 & U014 & API\_REFERENCE - Module 1 & README & PUBLISHED & 2026-08-26 18:15:24 & 2026-08-28 18:15:24 & NaN \\
+DOC\_WS002\_2 & WS002 & U046 & API\_REFERENCE - Module 2 & ARCHITECTURE\_GUIDE & PUBLISHED & 2026-08-20 06:15:24 & 2026-09-03 20:15:24 & NaN \\
+DOC\_WS003\_1 & WS003 & U036 & README - Module 1 & ADR & ARCHIVED & 2026-07-31 17:15:24 & 2026-08-26 08:15:24 & NaN \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Dữ liệu mẫu bảng CodeEntity}
+\label{tab:mock_codeentity}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllll}
+\toprule
+entity\_id & file\_id & entity\_name & entity\_type & signature & doc\_comment & position & created\_at & updated\_at \\
+\midrule
+CE\_F\_REPO\_WS001\_1\_1\_1 & F\_REPO\_WS001\_1\_1 & processData1 & METHOD & void processData1(String orderId) & API logic doc & \{"start\_line": 10, "end\_line": 25\} & 2026-07-31 20:15:24 & 2026-08-20 14:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_2 & F\_REPO\_WS001\_1\_1 & processData2 & METHOD & void processData2(String orderId) & API logic doc & \{"start\_line": 20, "end\_line": 35\} & 2026-07-30 08:15:24 & 2026-09-08 07:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_3 & F\_REPO\_WS001\_1\_1 & processData3 & METHOD & void processData3(String orderId) & API logic doc & \{"start\_line": 30, "end\_line": 45\} & 2026-09-01 03:15:24 & 2026-09-11 09:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_4 & F\_REPO\_WS001\_1\_1 & processData4 & METHOD & void processData4(String orderId) & API logic doc & \{"start\_line": 40, "end\_line": 55\} & 2026-08-21 12:15:24 & 2026-08-23 17:15:24 \\
+CE\_F\_REPO\_WS001\_1\_1\_5 & F\_REPO\_WS001\_1\_1 & processData5 & METHOD & void processData5(String orderId) & API logic doc & \{"start\_line": 50, "end\_line": 65\} & 2026-08-23 04:15:24 & 2026-09-09 06:15:24 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\textit{Lưu ý: Trên đây là trích xuất 5 dòng dữ liệu mẫu đại diện cho 4 thực thể cốt lõi. Do khối lượng dữ liệu mô phỏng thực tế rất lớn (hơn 1000 bản ghi trên 27 bảng), toàn bộ file Excel \texttt{Task5\_MockData\_LivingDocs\_Final.xlsx} được công khai tại kho chứa dự án mã nguồn mở của nhóm.}
