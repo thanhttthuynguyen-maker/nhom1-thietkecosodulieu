@@ -1,37 +1,201 @@
-This chapter shows how to introduce \textbf{sections, subsections, and paragraphs}.\footnote{A short footnote. The numbering of the footnotes restarts at the beginning of each chapter. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.} It also shows how to introduce various references into the book.
+\section{Kiểm chứng Toàn vẹn Cơ sở Dữ liệu và Ràng buộc Nghiệp vụ}
 
-Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. 
+\subsection{Khung Rà Soát Lý Thuyết}
 
-\section{Generic section}\label{s:section}
+Để đảm bảo quá trình chuyển đổi từ sơ đồ quan niệm (ERD) sang lược đồ vật lý (SQL DDL) không xảy ra sai sót, toàn bộ cấu trúc cơ sở dữ liệu được đối chiếu thông qua 7 tiêu chuẩn kiểm chứng cốt lõi sau đây:
 
-Lorem ipsum\index{ipsum} dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Nullam molestie, libero sit amet luctus vehicula, eros purus ultrices libero, eget fermentum leo sapien a metus. Duis porta massa vel justo posuere, nec placerat neque dictum. Morbi nec velit in turpis fermentum cursus nec ut leo. Integer vitae eros vehicula, fermentum turpis sed, fermentum elit. Suspendisse ac mauris at nisl ultricies commodo id nec justo. 
+\subsection{A. Kiểm chứng Khóa (Key Verification)}
+\begin{itemize}
+    \item \textbf{Khóa chính (Primary Key):}
+    \begin{itemize}
+        \item Mỗi thực thể mạnh đã có đúng 1 thuộc tính khóa đơn giản, không trùng, không NULL chưa? (VD: \texttt{user\_id}, \texttt{workspace\_id}).
+        \item Thực thể yếu (\texttt{Branch}, \texttt{Commit}, \texttt{File}, \texttt{CodeEntity}...) có cần khóa phức hợp hay dùng surrogate key (ID riêng) là đủ?
+        \item Thực thể sinh ra từ mối kết hợp (\texttt{RolePermission}, \texttt{WorkspaceMember}, \texttt{TemplateMapping}...) đã có PK riêng thay vì dùng ghép 2 FK làm PK chưa? Nếu dùng surrogate key, đã có ràng buộc \texttt{UNIQUE} trên cặp FK để tránh trùng lặp chưa?
+    \end{itemize}
+    \item \textbf{Khóa ngoại (Foreign Key):}
+    \begin{itemize}
+        \item Mỗi bảng con đã khai đủ FK trỏ về tất cả bảng cha theo đúng mối kết hợp ở Task 3 chưa? (VD: \texttt{CodeDiff} có cả \texttt{commit\_id} lẫn \texttt{pr\_id}).
+        \item FK có cho phép NULL đúng theo mức tham gia (Optional/Partial) ở Task 3 không? (VD: \texttt{Approval.rejection\_reason} chỉ có giá trị khi \texttt{decision = REJECTED}).
+    \end{itemize}
+    \item \textbf{Khóa dự tuyển / thay thế (Candidate Key):}
+    \begin{itemize}
+        \item Có thuộc tính nào ngoài PK đủ điều kiện làm khóa thay thế và cần ràng buộc \texttt{UNIQUE} không? (VD: \texttt{User.email}, \texttt{Commit.commit\_hash}, \texttt{GitHubConnection.github\_user\_id}, \texttt{PullRequest.(repository\_id, pr\_number)}).
+    \end{itemize}
+\end{itemize}
 
-\subsection{Generic subsection}
+\subsection{B. Kiểm chứng Ràng buộc Toàn vẹn Tham chiếu (Referential Integrity)}
+\begin{itemize}
+    \item FK con có luôn trỏ tới 1 bản ghi cha thực sự tồn tại không (không có khóa ngoại mồ côi)?
+    \item Khi bản ghi cha bị soft-delete (\texttt{deleted\_at} khác NULL), các bản ghi con xử lý thế nào — vẫn giữ nguyên để phục vụ audit hay bị chặn thao tác?
+    \item FK có đúng phạm vi lồng nhau không? (VD: \texttt{CodeEntity} trong \texttt{TemplateMapping} phải cùng \texttt{Workspace} với \texttt{Template} chứa nó).
+\end{itemize}
 
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam erat volutpat. Donec tincidunt, quam sed pellentesque fermentum, lorem dolor consequat lectus, at pulvinar arcu ipsum in ligula. Mauris pretium ipsum id sapien posuere vehicula. Vivamus consectetur, turpis vitae pellentesque molestie, libero odio venenatis mauris, id vestibulum nisl nulla sit amet enim.
+\subsection{C. Kiểm chứng Ràng buộc Tham gia (Participation Constraint)}
+\begin{itemize}
+    \item \textbf{Mức tham gia bắt buộc (Total, min=1):} Các thực thể yếu có bắt buộc phải gắn với cha không? (VD: \texttt{DocumentVersion} bắt buộc thuộc 1 \texttt{Document}).
+    \item \textbf{Mức tham gia tùy chọn (Partial, min=0):} Thực thể mạnh có cho phép tồn tại độc lập không có con không? (VD: \texttt{Document} có thể chưa có \texttt{DocumentVersion} nào).
+\end{itemize}
 
-\subsection{Another generic subsection}
+\subsection{D. Kiểm chứng Ràng buộc Miền giá trị (Domain Constraint)}
+\begin{itemize}
+    \item Các cột \texttt{status}/\texttt{decision}/\texttt{type} đã liệt kê đủ toàn bộ enum trong Data Dictionary chưa? Ứng dụng có cần CHECK constraint để chặn giá trị rác không?
+    \item Giá trị số có ràng buộc khoảng hợp lệ chưa? (\texttt{similarity\_score} thuộc khoảng [0, 1]; \texttt{additions}/\texttt{deletions} $\ge 0$).
+    \item Cột NULLable đã đúng theo mô tả chưa? (VD: \texttt{merged\_at} chỉ có giá trị khi \texttt{status = MERGED}).
+\end{itemize}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper justo nec sem blandit, ac interdum libero convallis. Nulla facilisi. Etiam euismod, purus eget tempor feugiat, lectus ex vehicula justo, ut feugiat odio nisi sit amet lorem\index{lorem}. Vivamus id lobortis justo. Sed varius scelerisque nibh, ut finibus quam vehicula nec. Cras ultricies consectetur ex, sit amet vestibulum lacus hendrerit vel. Sed lacinia eleifend purus. Nunc dignissim eros et sapien lacinia eleifend. Curabitur sit amet velit eu metus suscipit tempus. Maecenas in libero felis. Sed quis eros sapien. Suspendisse potenti. Curabitur porta est sed enim efficitur, a tempor justo fermentum. Vivamus pulvinar enim vitae semper rutrum. Aenean non mauris sed lectus vestibulum feugiat eget et ipsum. Donec semper vitae enim at ultricies. Sed eu arcu justo.
+\subsection{E. Kiểm chứng Ràng buộc Duy nhất (Unique Constraint)}
+\begin{itemize}
+    \item Các tổ hợp (\texttt{repository\_id}, \texttt{pr\_number}), (\texttt{repository\_id}, \texttt{branch\_name}), (\texttt{repository\_id}, \texttt{file\_path}) không được phép trùng lặp trong cùng một repo.
+    \item Tổ hợp (\texttt{user\_id}, \texttt{workspace\_id}) trong \texttt{WorkspaceMember} — 1 user chỉ có 1 role tại 1 workspace tại 1 thời điểm.
+\end{itemize}
 
-\section{Paragraphs}
+\subsection{F. Kiểm chứng Ràng buộc Nghiệp vụ đặc thù (Business Rules)}
+\begin{itemize}
+    \item Chỉ Role Manager mới được tạo \texttt{Approval}; chỉ Role Staff mới được tạo \texttt{Review}.
+    \item \texttt{DocumentVersion} không được chuyển \texttt{PUBLISHED} nếu chưa có \texttt{Approval.decision = APPROVED}.
+    \item \texttt{GroundingEvidence} phải tồn tại trước khi AI được coi là "có căn cứ" để publish (yêu cầu chống Hallucination).
+    \item \texttt{DriftAlert} chỉ được sinh ra khi có \texttt{GroundingEvidence} liên quan phát hiện độ lệch.
+\end{itemize}
 
-Here's the example of a run-in paragraph heading (italic, on same line as text).
+\subsection{G. Kiểm chứng Ràng buộc Thời gian (Temporal Constraint)}
+\begin{itemize}
+    \item \texttt{created\_at} $\le$ \texttt{updated\_at} ở mọi bảng có chứa cả 2 cột.
+    \item Phiên bản (Version) sau phải có \texttt{created\_at} muộn hơn phiên bản liền trước của cùng một \texttt{Document}.
+    \item \texttt{Approval.approved\_at} phải sau \texttt{Review.updated\_at}; \texttt{DriftAlert.detected\_at} phải sau \texttt{GroundingEvidence.created\_at}.
+\end{itemize}
 
-\paragraph{Paragraph heading} Aenean fermentum purus id lacus volutpat, a eleifend mi posuere! Mauris nec nunc commodo, vehicula enim nec; vehicula ex. Nullam euismod lorem at eros efficitur: ut ultricies ante fringilla? Nam sagittis sapien id tortor commodo---a pulvinar velit ultricies\ldots Integer ac magna velorci mollis vestibulum. Fusce id ipsum vel magna placerat vehicula. Curabitur ac lobortis justo. 
 
-\paragraph{Another paragraph with some numbers and special characters} Pellentesque habitant 25\% morbi tristique senectus 1837--1905 et netus et malesuada fames ac turpis egestas. Integer semper euismod sapien vel dictum \#1 and \#6. Vivamus nec nunc sed metus interdum suscipit. (Maecenas tristique felis sed eleifend aliquet.) Donec et ipsum 3/4 in mauris ultricies pulvinar 9/2. Nullam quis ``sapien a justo'' vestibulum fermentum. Cras sed odio \& vitae mi placerat mollis: \$23.
+\subsection{Ma trận truy vết (Traceability Matrix)}
 
-\section{References} 
+Đối chiếu mỗi mục trong Khung Rà Soát Lý Thuyết (A–G) với Test Case tương ứng — đảm bảo không mục nào bị bỏ sót kiểm chứng thực nghiệm.
 
-References can be appended at the end of a sentence, in parenthesis \citep{MS15}.\footnote{This is a longer footnote to show how the page shape changes when footnotes occupy several lines. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat\index{consequat}. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa.} References can also include page numbers or other bibliographical information \citep[p. 1305]{MS19}.  References can be in text: for instance, \citet{M12} found this and \citet[figure 1]{M14} found that. It's also possible to collate several references to the same author: for instance, \citet{M12,M14} found things. References from the same authors and same year appear as follows: \citet{LMS18a,LMS18b} wrote something. It is also possible to cite the authors of a study by name, or the year of a study: for instance, \citeauthor{EMM21} wrote a paper in \citeyear{EMM21} on this topic.
+\begin{table}[h]
+    \centering
+    \caption{Ma trận truy vết (Traceability Matrix)}
+    \label{tab:traceability_matrix}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|p{8.5cm}|l|}
+    \hline
+    \textbf{Mục} & \textbf{Nội dung khung lý thuyết} & \textbf{TC kiểm chứng} \\ \hline
+    A & Khóa chính / khóa ngoại / candidate key & TC\_10 \\ \hline
+    B & Toàn vẹn tham chiếu (FK tồn tại + đúng phạm vi) & TC\_02, TC\_05 \\ \hline
+    C & Ràng buộc tham gia (Total / Partial Participation) & TC\_04, TC\_07, TC\_09 \\ \hline
+    D & Ràng buộc miền giá trị (Domain / Check Constraint) & TC\_06, TC\_11 \\ \hline
+    E & Ràng buộc duy nhất (Unique Constraint) & TC\_01 \\ \hline
+    F & Ràng buộc nghiệp vụ đặc thù (Business Rules / RBAC) & TC\_03, TC\_08 \\ \hline
+    G & Ràng buộc thời gian (Temporal Constraint) & TC\_12 \\ \hline
+    \end{tabular}
+\end{table}
 
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam erat volutpat. Donec tincidunt, quam sed pellentesque fermentum, lorem dolor consequat lectus, at pulvinar arcu ipsum in ligula. Mauris pretium ipsum id sapien posuere vehicula. Vivamus consectetur, turpis vitae pellentesque molestie, libero odio venenatis mauris, id vestibulum nisl nulla sit amet enim. Integer vitae metus eget risus vulputate consectetur. Suspendisse potenti. Quisque dictum purus non justo aliquet, sed tristique odio dapibus. Sed tincidunt justo vitae leo mattis, a ullamcorper metus vestibulum. Sed ac sapien metus. Sed non mauris nec nisl vehicula iaculis eget eget enim. Suspendisse potenti. Sed ac purus volutpat, venenatis sem eget, fermentum lorem. Suspendisse eu convallis tortor. Nunc vel dictum libero. Cras eleifend, orci non faucibus gravida, sapien quam pharetra ligula, nec tincidunt elit ex at sapien.
 
-\section{URL}
+\subsection{Chi tiết Kịch bản Kiểm thử Thực tế trên Dữ liệu Mẫu}
 
-It is possible to insert URLs, such as the URL for this book template's repository: \url{https://github.com/pmichaillat/latex-book}. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Dựa trên khung rà soát lý thuyết, nhóm thực thi 12 kịch bản kiểm thử (Test Case) đối chiếu trực tiếp với bộ dữ liệu mẫu để chứng minh hệ thống cơ sở dữ liệu bắt lỗi và bảo vệ toàn vẹn dữ liệu thành công.
 
-Curabitur maximus libero id magna bibendum fringilla. Curabitur ultricies dictum justo. Nam efficitur lobortis sapien a tristique. Vivamus vestibulum, sem nec dignissim scelerisque, purus nunc volutpat ligula, vitae aliquam libero orci nec augue. Nullam semper pulvinar turpis eget finibus. Suspendisse potenti. Nunc posuere arcu eget mauris venenatis, id pharetra sapien dapibus. Etiam at dictum urna. Integer gravida, odio sit amet mattis scelerisque, ipsum arcu ullamcorper sem, in vehicula sapien elit in tellus. Cras nec justo eu mauris volutpat dignissim. Curabitur malesuada purus sed tortor sollicitudin, in ullamcorper risus suscipit. Sed auctor tortor non libero suscipit, nec vehicula velit consequat. Integer nec est at lacus venenatis malesuada sed nec tortor.
+\subsubsection*{TC\_01: Kiểm chứng Khóa chính phức hợp và Tính độc nhất (Composite Unique Key)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được việc 1 user giữ 2 vai trò xung đột trong cùng 1 workspace không?
+    \item \textbf{Kịch bản:} Dùng lệnh \texttt{INSERT} để gán tài khoản (\texttt{U048}) vào cùng một Workspace hai lần với hai vai trò khác nhau trong bảng \texttt{WorkspaceMember}.
+    \item \textbf{Kết quả CSDL:} Hệ thống từ chối giao dịch, báo lỗi \textit{Violation of UNIQUE KEY constraint}.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn E) Một người dùng chỉ nắm giữ một trạng thái và một vai trò duy nhất tại một dự án trong cùng một thời điểm.
+    \item \textbf{Giải pháp kỹ thuật:} Thiết lập ràng buộc \texttt{UNIQUE(user\_id, workspace\_id)} trên bảng \texttt{WorkspaceMember}.
+\end{itemize}
+
+\subsubsection*{TC\_02: Kiểm chứng Quy tắc Xóa mềm (Soft Delete) đối với Thực thể mạnh}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Khi xóa 1 User, hệ thống có đảm bảo không mất dữ liệu lịch sử liên quan (không hard-delete) không?
+    \item \textbf{Kịch bản:} Quản trị viên cấp cao thực thi lệnh \texttt{DELETE FROM User WHERE user\_id = 'U01'}.
+    \item \textbf{Kết quả CSDL:} Bản ghi không bị xóa vật lý. Dữ liệu lịch sử bình luận (\texttt{ReviewComment}) giữ nguyên 100%.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn B) Yêu cầu lưu vết kiểm toán (Audit). Dữ liệu người dùng là khóa ngoại của nhiều nghiệp vụ nên tuyệt đối không được xóa vĩnh viễn.
+    \item \textbf{Giải pháp kỹ thuật:} Cài đặt \texttt{TRIGGER} loại \texttt{BEFORE DELETE} trên bảng \texttt{User} để tự động thực hiện \texttt{UPDATE User SET deleted\_at = CURRENT\_TIMESTAMP} thay thế.
+\end{itemize}
+
+\subsubsection*{TC\_03: Kiểm chứng Luồng ủy quyền theo Ngữ cảnh (Scoped RBAC)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được người không đủ quyền thực hiện thao tác Approval không?
+    \item \textbf{Kịch bản:} Một thành viên chỉ mang vai trò Developer tại Workspace A cố tình gửi lệnh chèn dữ liệu vào bảng \texttt{Approval} để phê duyệt tài liệu.
+    \item \textbf{Kết quả CSDL:} Giao dịch bị từ chối với mã lỗi \textit{Access Denied}.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn F) Chỉ cấp Quản lý có quyền \texttt{DOC\_APPROVE} tại đúng Workspace đó mới được phép thực thi chốt Approval.
+    \item \textbf{Giải pháp kỹ thuật:} Cài đặt \texttt{TRIGGER/STORED PROCEDURE} thực hiện \texttt{JOIN} qua \texttt{WorkspaceMember} và \texttt{RolePermission} để xác thực quyền trước khi \texttt{INSERT}.
+\end{itemize}
+
+\subsubsection*{TC\_04: Kiểm chứng Khóa ngoại và Mức tham gia bắt buộc (Total Participation)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được việc tạo Repository mà không gắn với Workspace nào không?
+    \item \textbf{Kịch bản:} Truyền giá trị \texttt{workspace\_id = NULL} khi chèn một kho mã nguồn mới vào bảng \texttt{Repository}.
+    \item \textbf{Kết quả CSDL:} Lập tức báo lỗi \textit{NOT NULL constraint failed}.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn C) Thực thể \texttt{REPOSITORY} tham gia bắt buộc toàn phần vào \texttt{WORKSPACE}.
+    \item \textbf{Giải pháp kỹ thuật:} Thiết lập thuộc tính \texttt{NOT NULL} cho cột khóa ngoại \texttt{workspace\_id} trong lệnh DDL.
+\end{itemize}
+
+\subsubsection*{TC\_05: Kiểm chứng Toàn vẹn Quan hệ Tự thân (Self-Referencing Relationship)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có đảm bảo Dependency chỉ trỏ tới CodeEntity thực sự tồn tại không?
+    \item \textbf{Kịch bản:} Khai báo một quan hệ gọi hàm trong bảng \texttt{Dependency} nhưng cột \texttt{target\_entity\_id} trỏ tới một mã ID ảo không tồn tại.
+    \item \textbf{Kết quả CSDL:} Chặn lưu và báo lỗi \textit{Foreign Key Constraint Violation}.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn B) Đảm bảo tính toàn vẹn của mạng lưới phụ thuộc mã nguồn (AST).
+    \item \textbf{Giải pháp kỹ thuật:} Bảng \texttt{Dependency} cài đặt hai khóa ngoại trỏ về \texttt{CodeEntity(entity\_id)} cho cả hai cột \texttt{source\_entity\_id} và \texttt{target\_entity\_id}.
+\end{itemize}
+
+\subsubsection*{TC\_06: Kiểm chứng Ràng buộc Miền giá trị (Check Constraint)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được PullRequest có source\_branch trùng target\_branch không?
+    \item \textbf{Kịch bản:} Lưu một \texttt{PullRequest} với nhánh đích trùng hoàn toàn với nhánh nguồn.
+    \item \textbf{Kết quả CSDL:} Lệnh lưu bị từ chối.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn D) Pull Request dùng để so sánh chênh lệch mã giữa hai nhánh khác biệt.
+    \item \textbf{Giải pháp kỹ thuật:} Khai báo ràng buộc miền giá trị: \texttt{CONSTRAINT chk\_branches CHECK (source\_branch $<$ $>$ target\_branch)}.
+\end{itemize}
+
+\subsubsection*{TC\_07: Kiểm chứng Xóa dây chuyền của Thực thể yếu (Cascade on Weak Entities)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Khi xóa Template, hệ thống có tự động dọn sạch toàn bộ dữ liệu con phụ thuộc không?
+    \item \textbf{Kịch bản:} Xóa một khuôn mẫu tài liệu (\texttt{Template}) đang được sử dụng khỏi hệ thống.
+    \item \textbf{Kết quả CSDL:} Toàn bộ bản ghi liên quan trong chuỗi \texttt{Template} $\rightarrow$ \texttt{TemplateSection} $\rightarrow$ \texttt{Placeholder} $\rightarrow$ \texttt{TemplateMapping} tự động bị xóa sạch.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn C) Các thực thể yếu liên tiếp không thể tồn tại độc lập nếu thực thể cha đã bị xóa.
+    \item \textbf{Giải pháp kỹ thuật:} Bổ sung mệnh đề \texttt{ON DELETE CASCADE} tại cả 3 khóa ngoại liên tiếp trong chuỗi thực thể yếu.
+\end{itemize}
+
+\subsubsection*{TC\_08: Kiểm chứng Bất biến Dữ liệu bằng Trigger Trạng thái}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được việc chỉnh sửa nội dung của 1 DocumentVersion đã PUBLISHED không?
+    \item \textbf{Kịch bản:} Dùng lệnh \texttt{UPDATE} sửa trực tiếp trường \texttt{content} của một \texttt{DocumentVersion} đang có trạng thái \texttt{PUBLISHED}.
+    \item \textbf{Kết quả CSDL:} Giao dịch thất bại, lệnh ghi đè bị chặn hoàn toàn.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn F) Tài liệu đã xuất bản mang tính pháp lý cao nhất, cấm sửa trực tiếp.
+    \item \textbf{Giải pháp kỹ thuật:} Cài đặt \texttt{TRIGGER} loại \texttt{BEFORE UPDATE}. Nếu \texttt{OLD.status = 'PUBLISHED'} thì ném ra ngoại lệ hủy giao dịch.
+\end{itemize}
+
+\subsubsection*{TC\_09: Kiểm chứng Mức tham gia Tùy chọn (Partial Participation)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có cho phép 1 User tồn tại mà chưa tham gia Workspace nào không?
+    \item \textbf{Kịch bản:} Khởi tạo một tài khoản \texttt{User} mới tinh nhưng không chèn bất kỳ dữ liệu nào vào bảng \texttt{WorkspaceMember}.
+    \item \textbf{Kết quả CSDL:} Khởi tạo thành công, không phát sinh lỗi.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn C) Quan hệ giữa \texttt{USER} và \texttt{WORKSPACE} là tùy chọn đối với \texttt{USER}.
+    \item \textbf{Giải pháp kỹ thuật:} Bảng \texttt{User} độc lập, không chứa khóa ngoại tham chiếu bắt buộc \texttt{NOT NULL} trỏ về \texttt{Workspace}.
+\end{itemize}
+
+\subsubsection*{TC\_10: Kiểm chứng Toàn vẹn Khóa chính (Primary Key Constraint)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được việc tạo 2 Role trùng role\_id không?
+    \item \textbf{Kịch bản:} Khởi tạo một \texttt{Role} mới nhưng truyền giá trị \texttt{role\_id} là \texttt{R01} (ID đã tồn tại).
+    \item \textbf{Kết quả CSDL:} Giao dịch bị từ chối với mã lỗi \textit{Violation of PRIMARY KEY constraint}.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn A) Tính định danh duy nhất làm mỏ neo tham chiếu cho toàn bộ hệ thống.
+    \item \textbf{Giải pháp kỹ thuật:} Khai báo từ khóa \texttt{PRIMARY KEY} trực tiếp trên cột \texttt{role\_id} khi tạo bảng.
+\end{itemize}
+
+\subsubsection*{TC\_11: Kiểm chứng CHECK Constraint trên Miền giá trị Enum}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được việc lưu giá trị status ngoài tập enum hợp lệ không?
+    \item \textbf{Kịch bản:} Chèn một \texttt{DocumentVersion} với \texttt{status = 'UNKNOWN\_STATE'}.
+    \item \textbf{Kết quả CSDL:} Lệnh lưu bị từ chối với lỗi \textit{CHECK constraint violation}.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn D) Các cột trạng thái/loại phải giới hạn đúng trong tập giá trị đã định nghĩa ở Data Dictionary.
+    \item \textbf{Giải pháp kỹ thuật:} \texttt{CONSTRAINT chk\_version\_status CHECK (status IN ('DRAFT', 'IN\_REVIEW', 'APPROVED', 'PUBLISHED'))}.
+\end{itemize}
+
+\subsubsection*{TC\_12: Kiểm chứng Ràng buộc Toàn vẹn Thời gian (Temporal Constraint)}
+\begin{itemize}
+    \item \textbf{Câu hỏi kiểm chứng:} Hệ thống có ngăn được việc ghi nhận Approval sớm hơn thời điểm Review hoàn tất không?
+    \item \textbf{Kịch bản:} Chèn 1 \texttt{Approval} với \texttt{approved\_at} sớm hơn thời điểm \texttt{updated\_at} của \texttt{Review} tương ứng.
+    \item \textbf{Kết quả CSDL:} Giao dịch bị từ chối, báo lỗi vi phạm ràng buộc thời gian.
+    \item \textbf{Căn cứ nghiệp vụ:} (Tiêu chuẩn G) Trình tự nghiệp vụ bắt buộc là Review hoàn tất trước, Manager mới được Approval.
+    \item \textbf{Giải pháp kỹ thuật:} Cài đặt \texttt{TRIGGER} loại \texttt{BEFORE INSERT} trên bảng \texttt{Approval} để so sánh thời gian với bản ghi \texttt{Review} cùng \texttt{version\_id}.
+\end{itemize}
